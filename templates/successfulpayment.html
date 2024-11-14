@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'assets/logo.ico' %}" type="image/ico" sizes="32x32">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <title>Gamnest | Payment done</title>
+</head>
+
+<body>
+    <div class="p-4">
+        <div>
+            <div class="sticky top-0 bg-white z-10">
+            <img class="m-auto" src="{% static '/assets/Success.png' %}" />
+            <p class="text-center pt-1 font-semibold text-[#12B76A]">Purchase was successful</p>
+            <p class="font-bold text-center text-2xl" id="payment-amount"></p>
+            <img class="m-auto" src="{% static 'assets/Game - Get Premium Now!.png' %}" />
+            <p class="font-bold text-center text-xl pt-5">Congratulation!</p>
+            <p class="text-center pt-2">You have successfully purchased a ticket!</p>
+        </div>
+            <div class="paymentsetailscard">
+                <img class="pr-2" src="{% static 'assets/invoice.png' %}" />
+                <h1>Payment Details</h1>
+            </div>
+            <div id="paymentdetails" class="block">
+                <div class="flex justify-between items-center pt-5 pb-2">
+                    <div class="text-[#666666]">Product name</div>
+                    <div class="productname" id="product-name"></div>
+                </div>
+                <hr />
+                <div class="flex justify-between items-center pt-5 pb-2">
+                    <div class="text-[#666666]">Product subtotal</div>
+                    <div class="productsubtotal" id="product-subtotal"></div>
+                </div>
+                <hr />
+                <div class="flex justify-between items-center pt-2 pb-2">
+                    <div class="text-[#666666]">Discount</div>
+                    <div class="productdiscount" id="product-discount">-SEK0.00</div>
+                </div>
+                <hr />
+                <div class="flex justify-between items-center pt-2 pb-2">
+                    <div class="text-[#666666]">Total Payment</div>
+                    <div class="productdiscount" id="total-payment"></div>
+                </div>
+                <hr />
+            </div>
+            <div class="support-div relative flex items-center gap-2">
+                <img src="{% static 'assets/contactsupport.png' %}" />
+                Contact Support
+                <img class="absolute right-1 top-3" src="{% static 'assets/_content-right.png' %}" />
+            </div>
+            <a href="gamepage01">
+                <button type="button"
+                    class="btn next-btn left-0 w-full mt-4 items-center hover:bg-yellow-400 py-2 rounded-full border border-gray-300 bg-yellow-400 font-bold text-gray-700">
+                    Close
+                </button>
+            </a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{% static 'js/game.js' %}"></script>
+
+    <script>
+        // Retrieve ticket data from local storage
+        const ticketdata = JSON.parse(localStorage.getItem('selectedTicket'));
+
+        // Check if ticket data exists
+        if (ticketdata) {
+            // Update the product name
+            document.getElementById('product-name').textContent = ticketdata.name;
+
+            // Update the product subtotal, total payment
+            document.getElementById('product-subtotal').textContent = `SEK${ticketdata.price}`;
+            document.getElementById('total-payment').textContent = ` SEK${ticketdata.price} `;
+
+            // Update the payment amount shown at the top
+            document.getElementById('payment-amount').textContent = ` SEK${ticketdata.price} `;
+        } else {
+            console.error('No ticket data found in local storage.');
+        }
+    </script>
+</body>
+
+</html>

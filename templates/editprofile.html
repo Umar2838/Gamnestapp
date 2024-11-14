@@ -1,0 +1,217 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'assets/logo.ico'%}" type="image/ico" sizes="32x32">
+    <link href="{%static 'css/style.css'%}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <title>Gamnest | Location</title>
+</head>
+
+<body>
+    <div class="location-wrapper p-4">
+        <div class="sticky top-0 bg-white z-10">
+
+            <div class="relative flex items-center justify-center w-full mt-2">
+                <a href="gamepage01" class="absolute left-0">
+                    <img src="{% static 'assets/back.png' %}" alt="Back" class="w-6 h-6">
+                </a>
+                <div class="font-semibold text-xl">Edit Profile</div>
+            </div>
+        </div>
+
+        <!-- Form Fields -->
+        <form id="editForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+
+            <div class="flex mt-5 justify-center relative mx-auto bg-gray-400 w-20 h-20 rounded-full mb-[-180px]">
+                {% if user_profile and user_profile.user_profile %}
+                <img id="avatar" src="{{ user_profile.user_profile.url }}"
+                    class="absolute w-20 h-20 object-cover rounded-full" />
+                {% else %}
+                <img class="absolute w-20 h-20 object-cover rounded-full" src="{% static 'assets/avatar.png' %}" />
+                {% endif %}
+
+                <div class="w-6 h-6 bottom-0 right-0 bg-yellow-400 rounded-full absolute cursor-pointer"
+                    onclick="document.getElementById('fileInput').click()">
+                    <img src="{% static 'assets/camera.png' %}" style="width:16px;" class="absolute top-1 left-1" />
+                </div>
+                <!-- Hidden File Input -->
+                <input type="file" id="fileInput" name="fileInput" accept="image/*" style="display: none;"
+                    onchange="loadFile(event)" />
+            </div>
+
+            <div class="space-y-4 text-left">
+                <label class="block text-gray-700 relative text-sm font-medium">
+                    Name
+                    <div class="relative">
+                        <input type="text" id="fname" name="fname" value="{{ user_profile.name }}"
+                            placeholder="Enter your full name" required
+                            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 caret-yellow-400">
+
+                        <img class="absolute top-3 right-2 object-fit-cover"
+                            src="{% static 'assets/edit-2black.png' %}" />
+                    </div>
+                </label>
+
+                <label class="block text-gray-700 text-sm font-medium">
+                    Username
+                    <div class="relative">
+                        <input type="text" name="username" id="username" placeholder="Enter your username"
+                            value="{{ user_profile.user.username }}"
+                            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 caret-yellow-400">
+                        <img class="absolute top-3 right-2 object-fit-cover"
+                            src="{% static 'assets/edit-2black.png' %}" />
+                    </div>
+                </label>
+
+                <label class="block text-gray-700 text-sm font-medium relative">
+                    Date of birth
+                    <div class="relative">
+                        <input type="date" name="date" id="date"
+                            value="{% if user_profile.dob %}{{ user_profile.dob|date:'Y-m-d' }}{% endif %}"
+                            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 caret-yellow-400">
+                    </div>
+                </label>
+
+                <label class="block text-gray-700 text-sm font-medium">
+                    Email
+                    <div class="relative">
+                        <input type="text" name="email" id="email" placeholder="Enter your email"
+                            value="{{ user_profile.user.email }}"
+                            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 caret-yellow-400">
+                        <img class="absolute top-3 right-2 object-fit-cover"
+                            src="{% static 'assets/edit-2black.png' %}" />
+                    </div>
+                </label>
+
+                <div class="flex justify-between items-center">
+                    <div>Change Password?</div>
+                    <div>
+                        <label class="switch">
+                            <input type="checkbox" id="togglePasswordFields">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+                <p class="text-red-400 text-center">{{ errormessage }}</p>
+
+                <!-- Password fields container -->
+                <div id="passwordFields">
+                    <label class="block text-gray-700 text-sm font-medium relative">
+                        Current Password
+                        <div class="relative">
+                            <input id="currentPassword" type="password" name="currentPassword"
+                                placeholder="Enter your current password"
+                                class="w-full mt-1 px-4 py-2 border focus:ring-yellow-300 caret-yellow-300 border-gray-300 rounded focus:outline-none focus:ring-2">
+                            <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                                onclick="togglePasswordVisibility('currentPassword')">
+                                <i id="toggleIconCurrentPassword" class="fas fa-eye-slash text-gray-500"></i>
+                            </span>
+                        </div>
+                    </label>
+
+                    <label class="block text-gray-700 text-sm font-medium relative">
+                        New Password
+                        <div class="relative">
+                            <input id="newPassword" name="newPassword" type="password" placeholder="Enter new password"
+                                class="w-full mt-1 px-4 py-2 border focus:ring-yellow-300 caret-yellow-300 border-gray-300 rounded focus:outline-none focus:ring-2">
+                            <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                                onclick="togglePasswordVisibility('newPassword')">
+                                <i id="toggleIconNewPassword" class="fas fa-eye-slash text-gray-500"></i>
+                            </span>
+                        </div>
+                        <p class="text-gray-400 font-normal">Password must be at least 8 characters long!</p>
+                    </label>
+
+                    <label class="block text-gray-700 pt-4 text-sm font-medium relative">
+                        Confirm New Password
+                        <div class="relative">
+                            <input id="confirmPassword" name="confirmPassword" type="password"
+                                placeholder="Enter new password"
+                                class="w-full mt-1 px-4 py-2 border focus:ring-yellow-300 caret-yellow-300 border-gray-300 rounded focus:outline-none focus:ring-2">
+                            <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer"
+                                onclick="togglePasswordVisibility('confirmPassword')">
+                                <i id="toggleIconConfirmPassword" class="fas fa-eye-slash text-gray-500"></i>
+                            </span>
+                        </div>
+                        <p class="text-gray-400 font-normal">Make sure your password matches the password above!</p>
+                    </label>
+                </div>
+
+
+                <button id="profilebtn" type="submit"
+                    class="btn items-center hover:bg-yellow-400 active:bg-yellow-400 w-full py-2 mb-3 mt-4 rounded-full border border-gray-300 font-bold text-gray-700">
+                    <span id="buttonText">Done</span>
+                    <center>
+                        <div id="profileloader" class="loader" style="display: none;" >
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                        </div>
+                    </center>   
+                </button>
+            </div>
+        </form>
+
+
+    </div>
+
+
+
+    <script src="https://kit.fontawesome.com/da726f302a.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/game.js'%}"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        function togglePasswordVisibility(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleIcon = document.getElementById('toggleIcon' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1));
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            }
+        }
+        document.getElementById('togglePasswordFields').addEventListener('change', function () {
+            const passwordFields = document.getElementById('passwordFields');
+            if (this.checked) {
+                passwordFields.style.display = 'block';
+            } else {
+                passwordFields.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize Flatpickr on the date input field
+            flatpickr("#date", {
+                dateFormat: "Y-m-d", // Matches the format in your Django template {{ user_profile.dob|date:'Y-m-d' }}
+                altInput: true, // Shows a more readable date format in the input field
+                altFormat: "F j, Y", // Alternative display format (e.g., "January 1, 2023")
+            });
+        });
+        setTimeout(() => {
+            const messageContainer = document.querySelector('.message-container');
+            if (messageContainer) {
+                messageContainer.style.display = 'none';
+            }
+        }, 5000);
+    </script>
+
+</body>
+
+</html>

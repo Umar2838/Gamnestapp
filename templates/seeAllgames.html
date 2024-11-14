@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'assets/logo.ico'%}" type="image/ico" sizes="32x32">    <title>Gamenest | All games</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <link href="{%static 'css/style.css'%}" rel="stylesheet"/>
+</head>
+<body>
+    
+    <div class="p-10" >
+        <div class="sticky top-0 bg-white z-10">
+
+        <div class="relative flex items-center justify-center w-full mb-4">
+            <a href="gamepage01" class="absolute left-0">
+                <img src="{% static 'assets/back.png'%}" alt="Back" class="w-6 h-6">
+            </a>
+            <div class="font-semibold text-[26px]">
+                For you
+            </div>
+        </div>
+        </div>
+        <div class="relative search-wrapper" >
+            <input type="text" class="search w-full" placeholder="Search game" name="search"/>
+             <img class="search-icon" src="{%static 'assets/search-normal.png'%}" />
+             <img class="filter-icon" src="{%static 'assets/filter.png'%}." />
+        </div>
+        <ul class="allgamesUL" >
+            <li class="flex gap-10 allgamesli" >
+
+                <div>
+                    <img class="rounded-lg" src="{%static 'assets/allgamespic.png'%}" />
+                </div>
+                
+                    <div>
+                        <p class="" >Assassian's Creed</p>
+                        <div class="flex item-center gap-1" >
+                            <p class="font-semibold ">4.5</p>
+                            <span class="stars" style="color: gold; font-size: 20px;">★★★★☆</span>
+                        </div>
+                        <p class="text-[#CCCCCC]">Pac Man</p>
+                    </div>        
+                    <div><p class="tag" >New</p></div>      
+
+            </li>
+            <li class="flex gap-10 allgamesli" >
+
+                <div>
+                    <img class="rounded-lg" src="{%static 'assets/allgamespic.png'%}" />
+                </div>
+                
+                    <div>
+                        <p class="" >Assassian's Creed</p>
+                        <div class="flex item-center gap-1" >
+                            <p class="font-semibold ">4.5</p>
+                            <span class="stars" style="color: gold; font-size: 20px;">★★★★☆</span>
+                        </div>
+                        <p class="text-[#CCCCCC]">Pac Man</p>
+                    </div>        
+                    <div><p class="tag" >New</p></div>      
+
+            </li>
+
+            <li class="flex gap-10 allgamesli" >
+
+                <div>
+                    <img class="rounded-lg" src="{%static 'assets/allgamespic.png'%}" />
+                </div>
+                
+                    <div>
+                        <p class="" >Assassian's Creed</p>
+                        <div class="flex item-center gap-1" >
+                            <p class="font-semibold ">4.5</p>
+                            <span class="stars" style="color: gold; font-size: 20px;">★★★★☆</span>
+                        </div>
+                        <p class="text-[#CCCCCC]">Pac Man</p>
+                    </div>        
+                    <div><p class="tag" >New</p></div>      
+
+            </li>
+            <li class="flex gap-10 allgamesli" >
+
+                <div>
+                    <img class="rounded-lg" src="{%static 'assets/allgamespic.png'%}" />
+                </div>
+                
+                    <div>
+                        <p class="" >Assassian's Creed</p>
+                        <div class="flex item-center gap-1" >
+                            <p class="font-semibold ">4.5</p>
+                            <span class="stars" style="color: gold; font-size: 20px;">★★★★☆</span>
+                        </div>
+                        <p class="text-[#CCCCCC]">Pac Man</p>
+                    </div>        
+                    <div><p class="tag" >New</p></div>      
+
+            </li>
+            <li class="flex gap-10 allgamesli" >
+
+                <div>
+                    <img class="rounded-lg" src="{%static 'assets/allgamespic.png'%}" />
+                </div>
+                
+                    <div>
+                        <p class="" >Assassian's Creed</p>
+                        <div class="flex item-center gap-1" >
+                            <p class="font-semibold ">4.5</p>
+                            <span class="stars" style="color: gold; font-size: 20px;">★★★★☆</span>
+                        </div>
+                        <p class="text-[#CCCCCC]">Pac Man</p>
+                    </div>        
+                    <div><p class="tag" >New</p></div>      
+
+            </li>
+            <li class="flex gap-10 allgamesli" >
+
+                <div>
+                    <img class="rounded-lg" src="{%static 'assets/allgamespic.png'%}" />
+                </div>
+                
+                    <div>
+                        <p class="" >Assassian's Creed</p>
+                        <div class="flex item-center gap-1" >
+                            <p class="font-semibold ">4.5</p>
+                            <span class="stars" style="color: gold; font-size: 20px;">★★★★☆</span>
+                        </div>
+                        <p class="text-[#CCCCCC]">Pac Man</p>
+                    </div>        
+                    <div><p class="tag" >New</p></div>      
+
+            </li>
+            
+        </ul>
+    </div>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</body>
+</html>

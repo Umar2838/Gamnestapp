@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'assets/logo.ico'%}" type="image/ico" sizes="32x32">    <link href="{%static 'css/style.css'%}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <title>Gamnest | Setting</title>
+</head>
+<body>
+    <div class="setting-wrapper p-4" >
+        <div class="sticky top-0 bg-white z-10">
+
+        <div class="relative flex items-center justify-center  w-full  mt-2">
+            <a href="gamepage01" class="absolute left-0">
+                <img src="{% static 'assets/back.png'%}" alt="Back" class="w-6 h-6">
+            </a>
+            <div class="font-semibold text-xl">
+                Settings
+            </div>
+            </div>
+            </div>
+            <div class="setting-div relative flex items-center gap-2"> Personal settings
+                <img  class="absolute right-1 top-3" src="{%static 'assets/_content-right.png'%}" />
+                
+            </div>
+            <a href="location" >
+                <div class="setting-div relative flex items-center gap-2"> Location
+                    <img  class="absolute right-1 top-3" src="{%static 'assets/_content-right.png'%}" />
+                    
+                </div>
+            </a>
+            <hr />
+            <a href="notification">
+                <div class="setting-div relative flex items-center gap-2"> Notification
+                    <img  class="absolute right-1 top-3" src="{%static 'assets/_content-right.png'%}" />
+                    
+                </div>
+            </a>
+            <hr />
+            <a href="gamepage01#support" >
+                <div class="setting-div relative flex items-center gap-2">Contact Support
+                    <img  class="absolute right-1 top-3" src="{%static 'assets/_content-right.png'%}" />    
+                </div>
+            </a>
+            <hr />
+            <a href="language" >
+                <div class="setting-div relative flex items-center gap-2">Change Language
+                    <img  class="absolute right-1 top-3" src="{% static 'assets/_content-right.png'%}" />
+                    
+                </div>
+                <hr />
+            </a>
+            <div class="setting-div relative flex items-center gap-2">Terms of service
+                <img  class="absolute right-1 top-3" src="{%static 'assets/_content-right.png'%}" />
+
+            </div>
+            <hr />
+            <div class="setting-div relative flex items-center gap-2"> Privacy policy
+                <img  class="absolute right-1 top-3" src="{%static './assets/_content-right.png'%}" />
+
+            </div>
+            <hr />
+            <a href="loginshow">
+                <button type="button"
+                    class="btn bottom-4 right-0 absolute next-btn hover:bg-red-300 hover:text-white py-2 rounded-full border border-red-400 bg-transparent font-bold text-red-400"
+                    style="width: calc(100% - 40px); left: 20px; right: 20px;">
+                    <div class="flex items-center justify-center">
+                        <img src="{%static 'assets/logout.png'%}" alt="Logout" />
+                        Logout
+                    </div>
+                </button>
+            </a>
+            
+            
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="{% static 'js/game.js'%}" ></script>
+</body>
+</html>

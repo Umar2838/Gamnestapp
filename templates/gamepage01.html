@@ -1,0 +1,608 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Gamnest | Game</title>
+ <link rel="icon" href="{% static 'assets/logo.ico'%}" type="image/ico" sizes="32x32">  
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{%static 'css/style.css'%}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Games Tab -->
+
+    <div class="game-wrapper" id="games">
+
+        <div class="gamewrapper-top">
+
+            <div class="flex justify-between items-center">
+                <div>
+                    <a href="gamepage01">
+                        <img src="{% static 'assets/brand-logo.png' %}" class="gamepagelogo" alt="brand-logo" />
+                    </a>
+                </div>
+                <a href="notification">
+                    <div class="notification-div">
+                        <img src="{%  static 'assets/notification.png' %}" class="notification-logo" alt="notification" />
+                        <div class="badge">4</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="userProfile-wrapper">
+                <div>
+                    {% if user_profile and user_profile.user_profile %}
+            <img style="border-radius: 50%; object-fit: cover; width: 50px; height: 50px;"
+                src="{{ user_profile.user_profile.url }}" />
+        {% else %}
+            <img style="border-radius: 50%; object-fit: cover; width: 50px; height: 50px;"
+                src="{% static 'assets/avatar.png' %}" />  
+        {% endif %}
+                </div>
+              
+                    <div>
+                        <p class="font-bold">{{ name.name }}</p>
+                        {% if user_profile and user_profile.selected_location %}
+                            <p class="flex">
+                                <img style="margin-left:-5px" src="{% static 'assets/ep_location-filled.png' %}" alt="Location Icon" />
+                                {{ user_profile.selected_location }}
+                            </p>
+                        {% endif %}
+                   
+                    
+                </div>
+            </div>
+        </div>
+        <div class="relative search-wrapper">
+            <input type="text" class="search w-full" placeholder="Search game" name="search" />
+            <img class="search-icon" src=" {%static 'assets/search-normal.png'%}" />
+            <img class="filter-icon" src="{% static '/assets/filter.png' %}" />
+        </div>
+
+        <div class="swiper">
+            <div class="swiper-wrapper">
+                <!-- Slides -->
+                <img class="swiper-slide" src="{% static '/assets/Ads.png' %}" />
+                <img class="swiper-slide" src="{% static '/assets/Ads.png' %}" />
+                <img class="swiper-slide" src="{% static '/assets/Ads.png' %}" />
+            </div>
+
+            <div class="custom-swiper-pagination"></div>
+        </div>
+        <div>
+            <h1 class="font-bold text-2xl pt-7">Hot Games</h1>
+        </div>
+
+        <div class="gamesswiper gamesmySwiper mt-4">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide games-slide">
+        <img src="{%static 'assets/images 1.png'%}" />
+        <div class="category-text">
+            <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+            <p class="font-semibold text-white">PacMan</p>
+            <p class="text-[#CCCCCC]">Arcade</p>
+        </div>
+      </div>
+      <div class="swiper-slide games-slide">
+        <img src="{%static 'assets/images 1.png'%}" />
+        <div class="category-text">
+            <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+            <p class="font-semibold text-white">PacMan</p>
+            <p class="text-[#CCCCCC]">Arcade</p>
+        </div>
+      </div>
+      <div class="swiper-slide games-slide">
+    
+        <img src="{%static 'assets/images 1.png'%}" />
+        <div class="category-text">
+            <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+            <p class="font-semibold text-white">PacMan</p>
+            <p class="text-[#CCCCCC]">Arcade</p>
+        </div>
+      </div>
+     
+      </div>
+      
+     
+    </div>
+ 
+      
+
+
+        <div>
+            <h1 class="font-bold text-2xl pt-7">Categories</h1>
+        </div>
+
+        <div class="swiper  categories-slider">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide relative">
+                    <img class="category-img object-fit-cover" src="{%static 'assets/download 1.png' %}" />
+                    <div class="category-text">
+                        <p class="font-semibold text-white">Strategy</p>
+                        <p class="text-[#CCCCCC]">Use your best strategy and beat the enemy</p>
+                    </div>
+                </div>
+              
+                <div class="swiper-slide">
+                    <img class="category-img" src="{%static 'assets/download 1.png' %}" />
+                    <div class="category-text">
+                        <p class="font-semibold text-white">Puzzle</p>
+                        <p class="text-[#CCCCCC]">Solve challenging puzzles to progress further</p>
+                    </div>
+                </div>
+            </div>
+            <div class="custom-swiper-pagination"></div>
+        </div>
+
+
+        <div class="flex justify-between items-center mb-2">
+            <div>
+                <h1 class="font-bold text-2xl ">For you</h1>
+            </div>
+            <div>
+                <a href="seeAllgames">
+                    <p class="text-[#F9C034] ">See All</p>
+                </a>
+            </div>
+        </div>
+        
+        <div style="margin-bottom:50px;border-radius: none; padding: 10px;" class="swiper listmySwiper">
+            <div  class="swiper-wrapper" style="margin-bottom: 0px;" >
+              <div class="swiper-slide swiperCard">
+                <img src="{%static 'assets/images 1.png'%}" />
+                <div class="category-text">
+                    <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+                    <p class="font-semibold text-white">PacMan</p>
+                    <p class="text-[#CCCCCC]">Arcade</p>
+                </div>
+              </div>
+              <div class="swiper-slide swiperCard">
+                <img src="{%static 'assets/images 1.png'%}" />
+                <div class="category-text">
+                    <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+                    <p class="font-semibold text-white">PacMan</p>
+                    <p class="text-[#CCCCCC]">Arcade</p>
+                </div>
+              </div>
+              <div class="swiper-slide swiperCard">
+                <img src="{%static 'assets/images 1.png'%}" />
+                <div class="category-text">
+                    <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+                    <p class="font-semibold text-white">PacMan</p>
+                    <p class="text-[#CCCCCC]">Arcade</p>
+                </div>
+              </div>
+              <div class="swiper-slide swiperCard">
+                <img src="{%static 'assets/images 1.png'%}" />
+                <div class="category-text">
+                    <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+                    <p class="font-semibold text-white">PacMan</p>
+                    <p class="text-[#CCCCCC]">Arcade</p>
+                </div>
+              </div>
+              <div class="swiper-slide swiperCard">
+                <img src="{%static 'assets/images 1.png'%}" />
+                <div class="category-text">
+                    <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+                    <p class="font-semibold text-white">PacMan</p>
+                    <p class="text-[#CCCCCC]">Arcade</p>
+                </div>
+              </div>
+              <div class="swiper-slide swiperCard">
+                <img src="{%static 'assets/images 1.png'%}" />
+                <div class="category-text">
+                    <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+                    <p class="font-semibold text-white">PacMan</p>
+                    <p class="text-[#CCCCCC]">Arcade</p>
+                </div>
+              </div>
+              <div class="swiper-slide swiperCard">
+                <img src="{%static 'assets/images 1.png'%}" />
+                <div class="category-text">
+                    <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+                    <p class="font-semibold text-white">PacMan</p>
+                    <p class="text-[#CCCCCC]">Arcade</p>
+                </div>
+              </div>
+              <div class="swiper-slide swiperCard">
+                <img src="{%static 'assets/images 1.png'%}" />
+                <div class="category-text">
+                    <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+                    <p class="font-semibold text-white">PacMan</p>
+                    <p class="text-[#CCCCCC]">Arcade</p>
+                </div>
+              </div>
+              <div class="swiper-slide swiperCard">
+                <img src="{%static 'assets/images 1.png'%}" />
+                <div class="category-text">
+                    <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
+                    <p class="font-semibold text-white">PacMan</p>
+                    <p class="text-[#CCCCCC]">Arcade</p>
+                </div>
+              </div>
+            </div>
+            <div class="swiper-pagination"></div>
+          </div>
+     
+    </div>
+
+    <!-- Support Tab -->
+
+    <div class="support-wrapper p-0  p-4 hidden" id="support">
+        <div class="sticky top-0 bg-white z-10">
+            <div class="relative flex items-center justify-center w-full ">
+                <a href="gamepage01" class="absolute left-0">
+                    <img src="{% static 'assets/back.png' %}" alt="Back" class="w-6 h-6">
+                </a>
+                <div class="font-semibold text-[24px]">
+                    Submit a Ticket
+                </div>
+            </div>
+            <div class='success-alert' id="success-alert" ><span style="display: inline-block; font-size: 14px;font-weight: bold; margin-right:4px; color: #000000; background: #f9c034; border-radius: 100px;">✓</span>Ticket submitted sucessfully !</div>
+
+            <p class="text-[#2B2B2B] text-center text-md pt-2 pb-2 ">Fill out the form below to submit a ticket</p>
+        </div>
+        <div class="flex gap-4 items-center">
+            <div class="contact-div">
+                <div class="contact-content">
+                    <img class="contact-img" src="{%static 'assets/ph_phone-light.png'%}" />
+                    <p class="font-bold">Call us</p>
+                </div>
+            </div>
+            <div class="contact-div">
+                <div class="contact-content">
+                    <img class="contact-img" src="{%static 'assets/Vector.png'%}" />
+                    <p class="font-bold">Email</p>
+                </div>
+            </div>
+        </div>
+
+
+    <form id="supportForm" >
+        {%csrf_token%}
+        <div class="contact-atttachements-div">
+            <h1 class="font-semibold pt-3 text-lg">Title</h1>
+            <input class="support-input" name="title" id="title" placeholder="Title of issue..." />
+            <h1 class="font-semibold pt-3 text-lg">Description</h1>
+            <textarea class="support-textarea" name="description"  id="description" placeholder="What us going on..."></textarea>
+            <h1 class="font-semibold text-lg">Upload Attachment</h1>
+            <div class="support-attachment relative" onclick="document.getElementById('fileInput').click()">
+                <div>
+                    <img src="{%static 'assets/clarity_attachment-line.png'%}" style="width:16px;"
+                        class="absolute top-3 right-2" />
+                </div>
+                <!-- Hidden File Input -->
+                <input type="file" id="fileInput" accept="image/*" style="display: none;" />
+            </div>
+        </div>
+        <small class="text-red-500" id="supportError" ></small>
+
+            <button type="submit" 
+                 class="btn mb-10 items-center hover:bg-yellow-400 w-full py-2  mt-3 rounded-full border border-gray-300 bg-yellow-400 font-bold text-gray-700"> 
+                 <span id="supportText">Register</span>
+                 <center>
+                     <div id="loader" class="loader" style="display: none;" >
+                         <div class="circle"></div>
+                         <div class="circle"></div>
+                         <div class="circle"></div>
+                         <div class="circle"></div>
+                     </div>
+                 </center>              </button>
+    </form>
+
+
+    <!--  -->
+</div>
+
+    <!-- Scan -->
+
+    <div class="qr-wrapper hidden p-4" id="qr">
+        <div class="sticky top-0 bg-white z-10">
+        <div class="relative flex items-center justify-center  w-full  mt-2">
+            <a href="gamepage01" class="absolute left-0">
+                <img src="{% static 'assets/back.png'%}" alt="Back" class="w-6 h-6">
+            </a>
+            <div class="font-semibold text-[24px]">
+                Scan QR
+            </div>
+        </div>
+    </div>
+        <div class="qr-scanner">
+            <div id="qr-video-container">
+                <video id="qr-video" autoplay>
+                </video>
+            </div>
+            <img style="margin-top:-300px"src="{% static 'assets/reload.png'%}" id="refresh" />
+            <div>
+                <p class="instructions">Place a QR code inside the viewfinder rectangle to scan it.</p>
+            </div>
+        </div>
+
+        <!-- Ticket Availability Section -->
+        {% if purchasedTicket %}
+        <div class="ticketavailability" id="ticketavailability" style="display: none;">
+            <p class="text-center pt-1">Select the type of ticket you want to use</p>
+            {% for ticket in purchasedTicket %}
+            <button class="ticket-availabe w-full overflow-y-scroll"  data-ticketid="{{ ticket.ticketid }}" data-purchasedticketid = "{{ticket.id}}" data-ticketprice="{{ticket.ticketprice}}" data-tickettitle="{{ticket.ticketname}}" data-ticketcount = "{{ticket.ticket_count}}" data-userid="{{ticket.user_id}}" onclick="handleTicketClick(event)">
+                <div><img src="{% static 'assets/star-2 1.png' %}" /> </div>
+                <div>
+                    <h1 class="font-bold">{{ ticket.ticketname }} <span class="font-light">ticket</span></h1>
+                </div>
+                <div  class="ticket-buy font-bold" >{{ ticket.ticket_count }}</div>
+            </button>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- No Ticket Available Section -->
+        <div class="ticketnonavailability" id="ticketnonavailability" style="display: none;">
+            <p class="text-center font-bold pt-4">No tickets available</p>
+            <a href="#ticket" data-target="ticket">
+                <button type="button"
+                    class="btn mt-4 mb-4 next-btn w-11/12 ml-4 hover:bg-yellow-400 py-2 rounded-full border border-gray-300 bg-yellow-400 font-bold text-gray-700">
+                    Buy Now
+                </button>
+            </a>
+        </div>
+        {% endif %}
+        
+        
+
+       
+
+    </div>
+
+
+  
+
+   
+    
+<!-- Tickets tab -->
+    
+    <div class="ticket-wrapper hidden p-4" id="ticket">
+        <div class="sticky top-0 bg-white z-10">
+
+        <div class="font-semibold text-center text-[24px]">
+            Tickets
+        </div>
+        </div>
+        <div class="ticket-owned flex relative ">Tickets Owned: &nbsp; <span>  
+            {% if totalcount %}
+            <div class="top-4 font-semibold ">{{totalcount}}</div>
+            {% else %}
+            <div class="top-4 font-semibold ">0</div>
+            {% endif %} </span>
+            <img id="ownedticketsShower" class="absolute right-1 top-3"
+                src="{%static 'assets/_content-right.png'%}" />
+        </div>
+        <div class="swiper mt-4 ">
+
+            <div class="swiper-wrapper  ">
+                <img class="swiper-slide rounded-2xl" src="{%static 'assets/Black Yellow Bold Bag Fashion Sale Banner 1.png'%}" />
+
+            </div>
+            <div class="custom-swiper-pagination"></div>
+        </div>
+        <div class="ticketavailablewrapper" >
+            {% for tickets in tickets %}
+            <div id="{{tickets.id}}" class="ticket-availabe">
+                <div><img src="{%static '/assets/star-2 1.png'%}" /></div>
+            <div>
+                <h1 class="font-bold">{{tickets.name}} <span class="font-light">ticket</span></h1>
+            </div>
+            <a class="ticket-buy font-bold" data-id="{{tickets.id}}" data-name="{{tickets.name}}" data-price="{{tickets.price}}"><button>SEK{{tickets.price}}</button></a>
+        </div>
+        {% endfor %}
+        
+    </div>
+    </div>
+
+    <!-- Owned Tickets -->
+
+    <div class="ticket-wrapper hidden p-4" id="ownedticket">
+        <div class="sticky top-0 bg-white z-10">
+
+        <div class="relative flex items-center justify-center  w-full  mt-2">
+            <a href="gamepage01" class="absolute left-0">
+                <img src="{% static 'assets/back.png'%}" alt="Back" class="w-6 h-6">
+            </a>
+            <div class="font-semibold text-[24px]">
+                Tickets Owned
+            </div>
+        </div>
+        </div>
+        <div class="ticket-owned relative">Tickets Owned:
+            {% if totalcount %}
+            <div class="absolute right-2 top-4 font-semibold ">{{totalcount}}</div>
+            {% else %}
+            <div class="absolute right-2 top-4 font-semibold ">0</div>
+
+            {% endif %}
+
+        </div>
+{% for purchasedTicket in purchasedTicket %}
+        <div class="ticket-availabe">
+            <div><img src="{% static 'assets/star-2 1.png'%}" /> </div>
+            <div>
+                <h1 class="font-bold">{{purchasedTicket.ticketname}} <span class="font-light">ticket</span></h1>
+            </div>
+            <div  class="ticket-buy font-bold">{{purchasedTicket.ticket_count}}</div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+
+   <!-- Profile tab -->
+
+    <div class="profile-wrapper hidden" id="profile">
+        <div class="profile-header-div">
+            <div>
+                <img  class="absolute top-0 right-2" src="{% static '/assets/Rectangle 6.png'%}" />
+            </div>
+            <div>
+                <img class="absolute " src="{% static '/assets/ellipse6.png'%}" />
+            </div>
+            <div>
+                <img class="absolute bottom-0 right-0" src="{%static 'assets/ellipse7.png' %}" />
+            </div>
+            
+                <div id="moreoption"  class="absolute top-20 left-10" >
+                    <img src="{%static 'assets/path2.png'%}" />
+                </div>
+           <a href="editprofile" >
+               <div class="absolute right-10 top-20" >
+                   <img src="{%static '/assets/edit-2.png'%}" />
+                </div>
+            </a>
+                <div class="profile-details-wrapper flex justify-center items-center ">
+                    <div class="relative top-[160px] w-full m-4">
+                        <div class="relative w-20 h-20 rounded-full  mx-auto bg-gray-300">
+                            {% if user_profile and user_profile.user_profile %}
+                                <img class="w-full h-full rounded-full object-cover" 
+                                     src="{{ user_profile.user_profile.url }}" />
+                            {% else %}
+                                <img class="w-full h-full object-cover" 
+                                     src="{% static 'assets/avatar.png' %}" />  
+                            {% endif %}
+                            <div class="absolute bottom-0 right-0 w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center shadow-md cursor-pointer">
+                                <img src="{% static 'assets/edit.png' %}" class="w-4 h-4" />
+                            </div>
+                        </div>
+                        
+                            <!-- Hidden File Input -->
+                            <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="loadFile(event)" />
+                        <h1 class="font-normal text-normal text-center pt-2 " >{{name.name}}</h1>
+                    <h1 class="font-semibold text-center text-sm pt-1" >{{user.email}}</h1>
+                    <div class="flex justify-center" >
+                        {% if user_profile and user_profile.selected_location %}
+                            <p class="flex font-semibold">
+                                <img src="{% static 'assets/ep_location-filled.png' %}" alt="Location Icon" />
+                                {{ user_profile.selected_location }}
+                            </p>
+                        {% endif %}
+                   
+                    
+                </div>
+                    <div class="flex gap-20 justify-center pt-3 text-center text-xl items-center">
+                        <div id="gamesTab" class="text-[#F9C034] cursor-pointer">
+                            <p style="text-decoration: none;" >0</p>
+                            <h1 id="gameunderline" class="underline"  >Games</h1>
+                        </div>
+                        <div id="tickets" class="text-[#F9C034] cursor-pointer">
+                            {% if purchasedTicket %}
+                            <p style="text-decoration: none;" >{{totalcount}}</p>
+                            {% else %}
+                            <p style="text-decoration: none;" >0</p>
+                            {% endif %}
+                            <h1 id="ticketunderline" >Tickets</h1>
+                        </div>
+                    </div>
+
+                    <div class="gamecontent" id="gamecontent" >
+                        <center><img src="{%static 'assets/gamenotcchoose.png'%}" /></center>
+                        <h1 class="font-bold pt-2 text-center" >You haven't played any game!</h1>
+                        <a   href="gamepage01">
+                            <button type="button"
+                                class="btn  next-btn left-0 w-full mt-2 mb-4  items-center hover:bg-yellow-400  py-2  rounded-full border border-gray-300 bg-yellow-400 font-bold text-gray-700">
+                                Play Now!
+                            </button>
+                            </a>
+                    </div>
+
+                    <div class="ticketcontent" style="display: none;" id="ticketcontent" >
+                        {% if purchasedTicket %}
+                        {% for purchasedTicket in purchasedTicket %}
+                        <div class="ticket-availabe w-full overflow-y-scroll">
+                            <div><img src="{% static 'assets/star-2 1.png'%}" /> </div>
+                            <div>
+                                <h1 class="font-bold">{{purchasedTicket.ticketname}} <span class="font-light">ticket</span></h1>
+                            </div>
+                            <button type="button" class="ticket-buy font-bold">{{purchasedTicket.ticket_count}}</button>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <center><img  src="{%static 'assets/Game - You don’t have friends yet!.png'%}" /></center>
+                            <h1 class="font-bold pt-2 text-center" >You haven't purchased any tickets!</h1>
+                            <a   href="gamepage01">
+                                <button type="button"
+                                    class="btn  next-btn left-0 w-full mt-2 mb-4  items-center hover:bg-yellow-400  py-2  rounded-full border border-gray-300 bg-yellow-400 font-bold text-gray-700">
+                                    Buy Now!
+                                </button>
+                                </a>
+        {% endif %}
+                       
+                    </div>
+
+                    
+                    
+
+    
+                </div>
+                </div>
+            </div>
+            <div id="overlay" class="overlay hidden" >
+
+                <div id="settingsDrawer" class="settings-drawer close">
+                    <div class="drawer-content">
+                       <a href="editprofile" > <h2 class="flex items-center py-2 gap-2 font-semibold"><img src="{%static 'assets/profile.png'%}" />Edit Profile</h2></a>
+                       <a href="setting" >  <h2 class="flex items-center py-2 gap-2 font-semibold"><img src="{%static 'assets/setting-2.png'%}" />Settings</h2></a>
+                       <a> <h2 class="flex items-center py-2 gap-2 font-semibold"><img src="{% static 'assets/info-circle.png'%}" />Rules and Policies</h2></a>
+                       <a> <h2 class="flex items-center py-2 gap-2 font-semibold"><img src="{% static 'assets/message-question.png'%}" />Help Center</h2></a>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+
+    
+
+       
+    </div>
+    
+
+
+
+    <div class="icon-bar">
+        <a class="active appbar-text" href="#games" data-target="games"><ion-icon name="game-controller"
+                size="large"></ion-icon>
+            <div>Games</div>
+        </a>
+        <a class="appbar-text " href="#support" data-target="support"><ion-icon name="headset" size="large"></ion-icon>
+            <div>Support</div>
+        </a>
+        <a class="appbar-text" href="#qr" id="scannertab" data-target="qr"><ion-icon name="qr-code" size="large"></ion-icon>
+            <div>Scan QR</div>
+        </a>
+        <a class="appbar-text" href="#ticket" data-target="ticket"><ion-icon name="ticket" size="large"></ion-icon>
+            <div>Tickets</div>
+        </a>
+        <a class="appbar-text " href="#profile" data-target="profile"><ion-icon name="person" size="large"></ion-icon>
+            <div>Me</div>
+        </a>
+    </div>
+
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/da726f302a.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    
+    <script src="{% static 'js/game.js'%}"></script>
+
+</body>
+
+</html>

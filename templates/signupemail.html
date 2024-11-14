@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'assets/logo.ico' %}" type="image/ico" sizes="32x32">
+    <title>Gamenest | Signup</title>
+    <!-- CSS links -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+
+<body class="flex items-center justify-center w-full h-screen">
+    <div class="login-wrapper p-6 w-full bg-white text-center">
+        <div class="relative flex items-center justify-center w-full mb-4">
+            <a href="signup" class="absolute left-0">
+                <img src="{% static 'assets/back.png' %}" alt="Back" class="w-6 h-6">
+            </a>
+            <div class="font-semibold text-xl">
+                Email
+            </div>
+        </div>
+
+        <p class="text-gray-400 mb-6 text-lg">Want to play with us? Let's create an account</p>
+
+        <form id="signupForm" method="POST">
+            {% csrf_token %}
+            <div class="space-y-4 text-left">
+                <!-- Username Input -->
+                <label class="block text-gray-700 text-sm font-medium">
+                    Username
+                    <input type="text" required name="username" placeholder="e.g @john123"
+                        class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:ring-yellow-300 caret-yellow-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value="{{ form.username.value|default_if_none:'' }}">
+                </label>
+                <!-- Error for Name -->
+                {% if form.username.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
+                {% endif %}
+
+                <!-- Email Input -->
+                <label class="block text-gray-700 text-sm font-medium">
+                    Email
+                    <input required type="email" name="email" placeholder="e.g example@email.com"
+                        class="w-full mt-1 px-4 py-2 border border-gray-300 focus:ring-yellow-300 caret-yellow-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value="{{ form.email.value|default_if_none:'' }}">
+                </label>
+                <!-- Error for Email -->
+                {% if form.email.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.email.errors.0 }}</p>
+                {% endif %}
+
+                <!-- Password Input -->
+                <label class="block text-gray-700 text-sm font-medium relative">
+                    Create Password
+                    <div class="relative">
+                        <input id="password" required name="password" type="password" placeholder="••••••••"
+                            class="w-full mt-1 px-4 py-2 border focus:ring-yellow-300 caret-yellow-300 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer" onclick="togglePasswordVisibility()">
+                            <i id="toggleIcon" class="fas fa-eye-slash text-gray-500"></i>
+                        </span>
+                    </div>
+                </label>
+                <!-- Error for Password -->
+                {% if form.password.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.password.errors.0 }}</p>
+                {% endif %}
+
+                <p class="text-gray-400 ">Password must be at least 8 characters long!</p>
+                
+                <div id="signuperror" class="text-red-500"></div>
+
+            </div>
+
+            <!-- Submit Button with Loader -->
+            <div class="mt-4">
+                <button type="submit" id="signupButton"
+                    class="btn items-center hover:bg-gray-400  w-full py-2 mb-3 mt-4 rounded-full border border-gray-300 bg-gray-300 font-bold text-gray-500 ">
+                    <span id="signupbuttonText">Register</span>
+                    <center>
+                        <div id="signuploader" class="loader" style="display: none;" >
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                        </div>
+                    </center>                
+                </button>
+            </div>
+        </form>
+
+        <p class="">Already have an account? <a class="link-tag" href="loginshow">Login</a></p>
+        <p class="pt-2 text-gray-400">━━━━━━━ other sign up ━━━━━━━</p>
+        <div class="flex gap-4 justify-center mt-2">
+            <a class="text-blue-600" href="#"><img src="{% static 'assets/google.png' %}" /></a>
+            <a class="text-blue-600" href="#"><img src="{% static 'assets/facebook.png' %}" /></a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/da726f302a.js" crossorigin="anonymous"></script>
+
+    <!-- Password Toggle Script -->
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            }
+        }
+        window.onload = function () {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.classList.add('show');
+            });
+        }
+    </script>
+</body>
+
+</html>

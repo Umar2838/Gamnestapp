@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'assets/logo.ico'%}" type="image/ico" sizes="32x32">  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+       <link href="{%static 'css/style.css'%}" rel="stylesheet">
+       <link rel="preconnect" href="https://fonts.gstatic.com">
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" />
+       <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+           rel="stylesheet">
+    <title>Gamnest | Payment Confirmation </title>
+</head>
+<body>
+    <div class="p-4"> 
+        <div class="sticky top-0 bg-white z-10">
+
+        <div class="relative flex items-center justify-center w-full mt-2">
+            <a href="gamepage01" class="absolute left-0">
+                <img src="{% static 'assets/back.png' %}" alt="Back" class="w-6 h-6">
+            </a>
+            <div class="font-semibold text-xl">Confirmation</div>
+        </div>
+        </div>
+        <h1 class="font-bold text-lg pt-10">Payment Details</h1>
+        <div id="productInformation">
+            <div class="flex justify-between items-center pt-5 pb-2">
+                <div class="text-[#666666]">Product name</div>
+                <div id="productname" class="productname"></div>
+            </div>
+            <hr />
+            <div class="flex justify-between items-center pt-2 pb-2">
+                <div class="text-[#666666]">Product subtotal</div>
+                <div class="productsubtotal">SEK <span id="subtotal"></span></div>
+            </div>
+            <hr />
+            <div class="flex justify-between items-center pt-2 pb-2">
+                <div class="text-[#666666]">Discount</div>
+                <div class="productdiscount">-SEK<span id="discount">0.00</span></div>
+            </div>
+            <hr />
+            <div class="flex justify-between items-center pt-2 pb-2">
+                <div class="text-[#666666]">Total Payment</div>
+                <div class="productdiscount">SEK<span id="total"></span></div>
+            </div>
+            <hr />
+        </div>
+        <h1 class="font-bold text-lg pt-10">Payment Method</h1>
+        <div class="flex items-center pt-5">
+            <img src="{% static '/assets/Logo (1).png' %}" /> &nbsp; Google Pay
+            <button class="ml-auto border-2 px-4 font-bold p-2 rounded-2xl">Change</button>
+        </div>
+        <a href="successfulpayment">
+            <button id="buyBtn" type="button"
+                class="btn fixed bottom-10 left-4 next-btn left-0 w-11/12 items-center hover:bg-yellow-400 py-2 rounded-full border border-gray-300 bg-yellow-400 font-bold text-gray-700">
+                Buy Now <span class="font-normal">SEK<span id="buy-now-price"></span></span>
+            </button>
+        </a>
+    </div>
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/da726f302a.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    
+    <script src="{% static 'js/game.js'%}"></script
+</body>
+</html>

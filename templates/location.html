@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'assets/logo.ico' %}" type="image/ico" sizes="32x32">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Gamnest | Location</title>
+</head>
+<body>
+    <div class="location-wrapper p-4">
+        <div class="sticky top-0 bg-white z-10">
+
+        <div class="relative flex items-center justify-center w-full mt-2">
+            <a href="gamepage01" class="absolute left-0">
+                <img src="{% static 'assets/back.png' %}" alt="Back" class="w-6 h-6">
+            </a>
+            <div class="font-semibold text-xl">Location</div>
+        </div>
+        </div>
+
+        <!-- Search -->
+        <div class="relative search-wrapper">
+            <input type="text" class="search w-full" placeholder="Search game" name="search" />
+            <img class="search-icon" src="{% static 'assets/search-normal.png' %}" />
+            <img class="filter-icon" src="{% static 'assets/filter.png' %}" />
+        </div>
+
+        <!-- Locations with tick icons -->
+        <div class="location-div relative flex items-center gap-2 cursor-pointer" data-location="current">
+            <img src="{% static 'assets/Frame 33783.png' %}" />Use Current Location
+            <img src="{% static 'assets/tick.png' %}" alt="Tick" class="tick-icon ml-auto" />
+        </div>
+        <hr />
+        {% for venue in venues %}
+        <div class="location-div relative flex items-center gap-2 cursor-pointer" data-location="{{ venue.name }}">
+             {{ venue.name }}
+            <img src="{% static 'assets/tick.png' %}" alt="Tick" class="tick-icon ml-auto" />
+        </div>
+        <hr />
+        {% endfor %}
+
+        <div class='success-alert' id="success-alert">
+            <span style="display: inline-block; font-size: 14px;font-weight: bold; margin-right:4px; color: #000000; background: #f9c034; border-radius: 100px; padding: 0px 6px;">✓</span>
+            Location successfully saved!
+        </div>
+
+        <!-- Logout Button -->
+        <a href="loginshow">
+            <button type="button" class="btn bottom-4 right-0 absolute next-btn hover:bg-red-300 hover:text-white py-2 rounded-full border border-red-400 font-bold text-red-400" style="width: calc(100% - 40px); left: 20px; right: 20px;">
+                <div class="flex items-center justify-center">
+                    <img src="{% static 'assets/logout.png' %}" alt="Logout" /> Logout
+                </div>
+            </button>
+        </a>
+    </div>
+
+    <script>
+        const locations = document.querySelectorAll('.location-div');
+
+        // Add click event listener to each location
+        locations.forEach(location => {
+            location.addEventListener('click', function () {
+                // Remove font-bold class for all locations
+                locations.forEach(loc => loc.classList.remove('font-bold'));
+
+                // Add font-bold class for clicked location
+                location.classList.add('font-bold');
+
+                // If "Use Current Location" is clicked
+                if (location.dataset.location === 'current') {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function (position) {
+                            const latitude = position.coords.latitude;
+                            const longitude = position.coords.longitude;
+
+                            // Send user's current location to the server
+                            saveLocation('current', latitude, longitude);
+                        });
+                    } else {
+                        alert('Geolocation is not supported by this browser.');
+                    }
+                } else {
+                    // Save the selected location (from the predefined list)
+                    saveLocation(location.dataset.location);
+                }
+            });
+        });
+
+        // Function to save location to the server
+        function saveLocation(locationName, latitude = null, longitude = null) {
+            fetch("location", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ location: locationName, latitude: latitude, longitude: longitude })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const successAlert = document.getElementById("success-alert")
+                    successAlert.classList.add("successanimate")  // Show with animation
+                    setTimeout(function() {
+                        successAlert.classList.remove("successanimate")  // Hide after a while
+                    }, 1500)
+                    window.location.href = "gamepage01"
+                } else {
+                    alert('Error saving location');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
