@@ -68,7 +68,7 @@
 /* loader */
 html,body{
     width: 100%;
-    height: 100%;
+    height: 100vh;
     font-size: 100%;
     position: relative;
   font: inherit;
@@ -108,29 +108,60 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin-top:-70px;
     padding: 20px;
 }
+.yellow-button {
+  background-color: #F9C034;  /* Yellow color */
+  color: #000; 
+  border-color: #F9C034;  /* Optional: change border to match */
+}
+
 .success-alert {
-  /* display: none; Initially hidden */
   position: absolute;
-  top: 10px;
- right: 0;
+  top: 0; /* Start at the top */
+  right: 5%;
+  left: 5%;
   background-color: #fff;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  padding: 10px;
+  padding: 30px 0px;
   border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
   z-index: 1000;
   color: #F9C034;
   font-size: 16px;
   font-family: 'Poppins', sans-serif;
   opacity: 0; /* Initially fully transparent */
-  transform: translateX(30px); /* Initially moved up */
-  transition: all 0.3s ease-in-out; /* Smooth transition for both opacity and transform */
+  transform: translateY(-70%); /* Start above the view */
+  transition: all 0.5s ease-in-out; /* Smooth transition */
 }
 
 .successanimate {
-  /* display: block; Show the alert */
-  opacity: 1; /* Fade in */
-  transform: translateX(0); /* Move it into its original position (visible) */
+  opacity: 1; /* Make visible */
+  transform: translateY(70%); /* Slide into center */
 }
+
+
+/* For active Male gender */
+#maleGender.active {
+  background-color: #4B61DD; /* Background for selected Male */
+  border-color: #4B61DD;  
+  color: #fff;   /* Optional: Highlight the border */
+}
+
+/* For active Female gender */
+#femaleGender.active {
+  background-color: #FB29FF; /* Background for selected Female */
+  border-color: #FB29FF; 
+  color: #fff;    /* Optional: Highlight the border */
+}
+
+/* Optional: When not selected, use a default color */
+#maleGender,
+#femaleGender {
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+
 
 
 .gamewrapper-top{
@@ -486,14 +517,15 @@ box-shadow: 0px 4px 8px -2px #1018281A;
 }
 
 #qr-video-container {
+  margin-top: 20px;
     position: relative;
     width: 300px;
     height: 400px;
 }
 
 #qr-video {
-    width: 500px;
-    height: 500px;
+    width: 300px;
+    height: 400px;
     object-fit: cover;
     border-radius: 20px !important;
 
@@ -503,7 +535,7 @@ box-shadow: 0px 4px 8px -2px #1018281A;
 /* Instructions text */
 .instructions {
     text-align: center;
-    padding-top: 10px;
+    padding-top: 150px;
     color: #666;
     font-size: 16px;
 }
@@ -562,6 +594,16 @@ padding:14px 15px 14px 15px;
   align-items:center;
 }
 .ticket-buy{
+  background: #F9C034;
+padding: 6px 12px 6px 12px;
+border-radius: 32px;
+margin-left:auto ;
+ 
+}
+.hidden {
+  display: none;
+}
+.ticket-count{
   background: #F9C034;
 padding: 6px 12px 6px 12px;
 border-radius: 32px;
@@ -688,6 +730,13 @@ margin: 0 auto;
   margin: 0 auto;
     margin-top:10px
   }
+  .active-method {
+    background-color: #fef3c7; /* Light yellow */
+    border: 2px solid #fbbf24; /* Yellow border */
+    border-radius: 8px;
+    padding: 5px;
+    transition: all 0.3s ease;
+}
 
   .tick-icon {
     display: none; /* Hide tick by default */
@@ -768,9 +817,6 @@ input:checked + .slider:before {
 #passwordFields {
   display: none;
 }
-.alert-container{
-    
-}
 .alert {
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
@@ -779,3 +825,236 @@ input:checked + .slider:before {
     opacity: 1;
 }
 
+/* From Uiverse.io by alexruix */ 
+.qrloader {
+  width: 112px;
+  height: 112px;
+}
+
+.box1,
+.box2,
+.box3 {
+  border: 16px solid #F9C034;
+  box-sizing: border-box;
+  position: absolute;
+  display: block;
+}
+
+.box1 {
+  width: 112px;
+  height: 48px;
+  margin-top: 64px;
+  margin-left: 0px;
+  animation: abox1 4s 1s forwards ease-in-out infinite;
+}
+
+.box2 {
+  width: 48px;
+  height: 48px;
+  margin-top: 0px;
+  margin-left: 0px;
+  animation: abox2 4s 1s forwards ease-in-out infinite;
+}
+
+.box3 {
+  width: 48px;
+  height: 48px;
+  margin-top: 0px;
+  margin-left: 64px;
+  animation: abox3 4s 1s forwards ease-in-out infinite;
+}
+
+@keyframes abox1 {
+  0% {
+    width: 112px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  12.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  25% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  37.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  50% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  62.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+
+  75% {
+    width: 48px;
+    height: 112px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  87.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  100% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+}
+
+@keyframes abox2 {
+  0% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  12.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  25% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  37.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  50% {
+    width: 112px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+
+  62.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  75% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  87.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  100% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+}
+
+@keyframes abox3 {
+  0% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  12.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  25% {
+    width: 48px;
+    height: 112px;
+    margin-top: 0px;
+    margin-left: 64px;
+  }
+
+  37.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 64px;
+  }
+
+  50% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 64px;
+  }
+
+  62.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 64px;
+  }
+
+  75% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 64px;
+  }
+
+  87.5% {
+    width: 48px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 64px;
+  }
+
+  100% {
+    width: 112px;
+    height: 48px;
+    margin-top: 64px;
+    margin-left: 0px;
+  }
+}

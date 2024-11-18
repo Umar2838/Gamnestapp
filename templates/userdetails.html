@@ -56,24 +56,27 @@
         <label class="block text-gray-700 text-sm font-medium">Gender</label>
         <div class="flex justify-between items-center mb-4">
           <label
-            class="flex justify-between relative items-center border rounded-2xl active:bg-[#4B61DD33] w-[150px] h-[60px] bg-red">
-            <input type="radio" name="gender" value="Male"   required />
-            <div class="flex justify-center absolute top-2 left-2 mx-auto w-10 h-10 rounded-full mb-[-180px]"
-              style="background: #4B61DD;">
-              <img src="{% static 'assets/Male.png' %}" class="absolute top-1.5" />
-            </div>
-            <div class="absolute left-14 font-semibold text-[15px]">Male</div>
-          </label>
-    
-          <label
-            class="flex justify-between relative items-center border rounded-2xl active:bg-[#FB29FF33] w-[150px] h-[60px] bg-red">
-            <input type="radio" name="gender" value="Female" required />
-            <div class="flex justify-center absolute top-2 left-2 mx-auto w-10 h-10 rounded-full mb-[-180px]"
-              style="background: #FB29FF;">
-              <img src="{% static 'assets/Female.png' %}" class="absolute top-1.5" />
-            </div>
-            <div class="absolute left-14 font-semibold text-[15px]">Female</div>
-          </label>
+    class="flex justify-between relative items-center border rounded-2xl active:bg-[#4B61DD33] w-[150px] h-[60px] bg-red"
+    id="maleGender">
+    <input type="radio" name="gender" value="Male" required />
+    <div class="flex justify-center absolute top-2 left-2 mx-auto w-10 h-10 rounded-full mb-[-180px]"
+        style="background: #4B61DD;">
+        <img src="{% static 'assets/Male.png' %}" class="absolute top-1.5" />
+    </div>
+    <div class="absolute left-14 font-semibold text-[15px]">Male</div>
+</label>
+
+<label
+    class="flex justify-between relative items-center border rounded-2xl active:bg-[#FB29FF33] w-[150px] h-[60px] bg-red"
+    id="femaleGender">
+    <input type="radio" name="gender" value="Female" required />
+    <div class="flex justify-center absolute top-2 left-2 mx-auto w-10 h-10 rounded-full mb-[-180px]"
+        style="background: #FB29FF;">
+        <img src="{% static 'assets/Female.png' %}" class="absolute top-1.5" />
+    </div>
+    <div class="absolute left-14 font-semibold text-[15px]">Female</div>
+</label>
+
         </div>
         <span id="genderError" class="text-red-500 text-sm"></span> <!-- Error Message -->
     

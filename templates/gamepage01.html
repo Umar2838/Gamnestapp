@@ -32,12 +32,12 @@
                         <img src="{% static 'assets/brand-logo.png' %}" class="gamepagelogo" alt="brand-logo" />
                     </a>
                 </div>
-                <a href="notification">
+                <!-- <a href="notification">
                     <div class="notification-div">
                         <img src="{%  static 'assets/notification.png' %}" class="notification-logo" alt="notification" />
                         <div class="badge">4</div>
                     </div>
-                </a>
+                </a> -->
             </div>
 
             <div class="userProfile-wrapper">
@@ -249,24 +249,48 @@
                     Submit a Ticket
                 </div>
             </div>
-            <div class='success-alert' id="success-alert" ><span style="display: inline-block; font-size: 14px;font-weight: bold; margin-right:4px; color: #000000; background: #f9c034; border-radius: 100px;">✓</span>Ticket submitted sucessfully !</div>
+            <div class='success-alert' id="success-alert" ><span style="display: inline-block; font-size: 14px;font-weight: bold; margin-right:4px; color: #000000; background: #f9c034; border-radius: 50%;padding:4px 8px;">✓</span>Ticket submitted sucessfully !</div>
 
             <p class="text-[#2B2B2B] text-center text-md pt-2 pb-2 ">Fill out the form below to submit a ticket</p>
         </div>
         <div class="flex gap-4 items-center">
-            <div class="contact-div">
+            <div class="contact-div" onclick="openModal('call', '123-456-7890')">
                 <div class="contact-content">
-                    <img class="contact-img" src="{%static 'assets/ph_phone-light.png'%}" />
+                    <img class="contact-img" src="{% static 'assets/ph_phone-light.png' %}" />
                     <p class="font-bold">Call us</p>
                 </div>
             </div>
-            <div class="contact-div">
+            <div class="contact-div" onclick="openModal('email', 'support@example.com')">
                 <div class="contact-content">
-                    <img class="contact-img" src="{%static 'assets/Vector.png'%}" />
+                    <img class="contact-img" src="{% static 'assets/Vector.png' %}" />
                     <p class="font-bold">Email</p>
                 </div>
             </div>
         </div>
+        
+        <!-- Modal Structure -->
+<div id="contactModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-10/12 max-w-md">
+        <h2 id="modalTitle" class="text-lg font-semibold mb-4"></h2>
+        <p id="modalContent" class="text-sm text-gray-700 mb-4"></p>
+        
+        <!-- This section is for the success message -->
+        <div id="copiedMessage" class="text-yellow-500 text-sm font-semibold hidden mb-4">
+            Copied to clipboard!
+        </div>
+
+        <div class="flex justify-between items-center">
+            <button onclick="copyToClipboard()" class="bg-yellow-400 hover:bg-yellow-500 text-gray-800 py-2 px-4 rounded-full">
+                Copy
+            </button>
+            <button onclick="closeModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-full">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+        
 
 
     <form id="supportForm" >
@@ -290,7 +314,7 @@
 
             <button type="submit" 
                  class="btn mb-10 items-center hover:bg-yellow-400 w-full py-2  mt-3 rounded-full border border-gray-300 bg-yellow-400 font-bold text-gray-700"> 
-                 <span id="supportText">Register</span>
+                 <span id="supportText">Submit Ticket</span>
                  <center>
                      <div id="loader" class="loader" style="display: none;" >
                          <div class="circle"></div>
@@ -308,7 +332,7 @@
     <!-- Scan -->
 
     <div class="qr-wrapper hidden p-4" id="qr">
-        <div class="sticky top-0 bg-white z-10">
+        <div class="sticky top-0 bg-transparent z-10">
         <div class="relative flex items-center justify-center  w-full  mt-2">
             <a href="gamepage01" class="absolute left-0">
                 <img src="{% static 'assets/back.png'%}" alt="Back" class="w-6 h-6">
@@ -318,12 +342,12 @@
             </div>
         </div>
     </div>
-        <div class="qr-scanner">
+        <div  class="qr-scanner">
             <div id="qr-video-container">
                 <video id="qr-video" autoplay>
                 </video>
             </div>
-            <img style="margin-top:-300px"src="{% static 'assets/reload.png'%}" id="refresh" />
+            <img style="margin-top:-250px"src="{% static 'assets/reload.png'%}" id="refresh" />
             <div>
                 <p class="instructions">Place a QR code inside the viewfinder rectangle to scan it.</p>
             </div>
@@ -347,21 +371,36 @@
         <!-- No Ticket Available Section -->
         <div class="ticketnonavailability" id="ticketnonavailability" style="display: none;">
             <p class="text-center font-bold pt-4">No tickets available</p>
-            <a href="#ticket" data-target="ticket">
-                <button type="button"
-                    class="btn mt-4 mb-4 next-btn w-11/12 ml-4 hover:bg-yellow-400 py-2 rounded-full border border-gray-300 bg-yellow-400 font-bold text-gray-700">
-                    Buy Now
-                </button>
-            </a>
+            <button onclick="(function() {
+                window.location.href = '#ticket'
+                document.getElementById('qr').classList.add('hidden');
+                document.getElementById('ticket').classList.remove('hidden');
+            
+                // Set the active tab
+                document.getElementById('scannertab').classList.remove('active'); // Remove active from QR tab
+                document.getElementById('tickettab').classList.add('active'); // Add active to Ticket tab
+            })()" type="button" class="btn mt-4 mb-4 next-btn w-11/12 ml-4 hover:bg-yellow-400 py-2 rounded-full border border-gray-300 bg-yellow-400 font-bold text-gray-700">
+                Buy Now
+            </button>
+          
         </div>
         {% endif %}
         
+        <div class="ticketnonavailability mb-[100px]" id="venuenonavailability" style="display: none;">
+            <p class="text-center text-red-600 font-bold pt-4">No Venue available</p>
         
-
-       
-
+        </div>
+    
     </div>
 
+    <div id="qrloader" class="flex justify-center items-center" style="height: 100vh;display: none;" >
+        <div class="qrloader">
+            <div class="box1"></div>
+            <div class="box2"></div>
+            <div class="box3"></div>
+        </div>
+
+</div>
 
   
 
@@ -376,13 +415,13 @@
             Tickets
         </div>
         </div>
-        <div class="ticket-owned flex relative ">Tickets Owned: &nbsp; <span>  
+        <div  id="ownedticketsShower" class="ticket-owned flex relative ">Tickets Owned: &nbsp; <span>  
             {% if totalcount %}
             <div class="top-4 font-semibold ">{{totalcount}}</div>
             {% else %}
             <div class="top-4 font-semibold ">0</div>
             {% endif %} </span>
-            <img id="ownedticketsShower" class="absolute right-1 top-3"
+            <img class="absolute right-1 top-3"
                 src="{%static 'assets/_content-right.png'%}" />
         </div>
         <div class="swiper mt-4 ">
@@ -393,7 +432,7 @@
             </div>
             <div class="custom-swiper-pagination"></div>
         </div>
-        <div class="ticketavailablewrapper" >
+        <div  class="ticketavailablewrapper" >
             {% for tickets in tickets %}
             <div id="{{tickets.id}}" class="ticket-availabe">
                 <div><img src="{%static '/assets/star-2 1.png'%}" /></div>
@@ -436,7 +475,7 @@
             <div>
                 <h1 class="font-bold">{{purchasedTicket.ticketname}} <span class="font-light">ticket</span></h1>
             </div>
-            <div  class="ticket-buy font-bold">{{purchasedTicket.ticket_count}}</div>
+            <div  class="ticket-count font-bold">{{purchasedTicket.ticket_count}}</div>
         </div>
         {% endfor %}
 
@@ -557,8 +596,7 @@
                     <div class="drawer-content">
                        <a href="editprofile" > <h2 class="flex items-center py-2 gap-2 font-semibold"><img src="{%static 'assets/profile.png'%}" />Edit Profile</h2></a>
                        <a href="setting" >  <h2 class="flex items-center py-2 gap-2 font-semibold"><img src="{%static 'assets/setting-2.png'%}" />Settings</h2></a>
-                       <a> <h2 class="flex items-center py-2 gap-2 font-semibold"><img src="{% static 'assets/info-circle.png'%}" />Rules and Policies</h2></a>
-                       <a> <h2 class="flex items-center py-2 gap-2 font-semibold"><img src="{% static 'assets/message-question.png'%}" />Help Center</h2></a>
+                       <a href="rulesAndpolicies" > <h2 class="flex items-center py-2 gap-2 font-semibold"><img src="{% static 'assets/info-circle.png'%}" />Rules and Policies</h2></a>
                         
                         
                     </div>
@@ -584,7 +622,7 @@
         <a class="appbar-text" href="#qr" id="scannertab" data-target="qr"><ion-icon name="qr-code" size="large"></ion-icon>
             <div>Scan QR</div>
         </a>
-        <a class="appbar-text" href="#ticket" data-target="ticket"><ion-icon name="ticket" size="large"></ion-icon>
+        <a class="appbar-text" href="#ticket" id="tickettab" data-target="ticket"><ion-icon name="ticket" size="large"></ion-icon>
             <div>Tickets</div>
         </a>
         <a class="appbar-text " href="#profile" data-target="profile"><ion-icon name="person" size="large"></ion-icon>

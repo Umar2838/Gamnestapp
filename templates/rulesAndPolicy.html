@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'assets/logo.ico'%}" type="image/ico" sizes="32x32">
+    <link href="{%static 'css/style.css'%}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <title>Rules & Policy</title>
+</head>
+<body>
+    <div class="rulesandpolicy-wrapper p-4">
+        <!-- Header Section -->
+        <div class="sticky top-0 bg-white z-10">
+            <div class="relative flex items-center justify-center w-full mt-2">
+                <a href="gamepage01#profile" class="absolute left-0">
+                    <img src="{% static 'assets/back.png' %}" alt="Back" class="w-6 h-6">
+                </a>
+                <div class="font-semibold text-xl">Gamenest Rules & Policy</div>
+            </div>
+        </div>
+
+        <!-- Rules and Policy Content -->
+        <div class="content mt-6 text-gray-700">
+            <h2 class="text-2xl font-semibold mb-4">1. Respect and Sportsmanship</h2>
+            <p class="mb-4">- **Fair Play**: All players are expected to demonstrate good sportsmanship. Cheating, exploiting bugs, or using unfair tactics will not be tolerated.</p>
+            <p class="mb-4">- **Respect Others**: We foster a community of kindness and respect. Harassment, offensive language, and bullying are strictly prohibited.</p>
+            <p class="mb-4">- **No Toxic Behavior**: Negative or abusive behavior, including trolling, flaming, or griefing, is not allowed. Everyone should feel safe and welcome.</p>
+
+            <h2 class="text-2xl font-semibold mt-6 mb-4">2. Account Security</h2>
+            <p class="mb-4">- **Personal Information**: Protect your account credentials. Do not share your login details with anyone. Gamnest is not responsible for any account theft or misuse.</p>
+            <p class="mb-4">- **Password Policy**: Use a strong and unique password to keep your account secure. Avoid using easily guessable passwords like your name or birthdate.</p>
+            <p class="mb-4">- **Account Sharing**: Do not share your account with others. Each player should only use their personal account to ensure fair competition.</p>
+
+            <h2 class="text-2xl font-semibold mt-6 mb-4">3. In-Game Conduct</h2>
+            <p class="mb-4">- **No Exploiting**: Using third-party programs or hacks to gain an advantage is strictly prohibited. Players found using cheats will be banned.</p>
+            <p class="mb-4">- **Appropriate Content**: Any offensive, inappropriate, or explicit content within the arcade will be removed. This includes usernames, avatars, and chat content.</p>
+            <p class="mb-4">- **Game Mods**: Any modification or tampering with the game files is against the rules. Only use official tools and updates provided by Gamnest.</p>
+
+            <h2 class="text-2xl font-semibold mt-6 mb-4">4. Payment and Virtual Goods</h2>
+            <p class="mb-4">- **Purchases**: Gamnest Arcade may offer virtual goods, in-game currencies, and premium content for purchase. All transactions are final and non-refundable unless specified by our refund policy.</p>
+            <p class="mb-4">- **No Unauthorized Transactions**: Do not engage in unauthorized transactions for in-game currency or goods. Only purchase items from the official Gamnest platform.</p>
+            <p class="mb-4">- **Payment Security**: All payments should be made through authorized and secure payment methods. Ensure your payment details are protected.</p>
+
+            <h2 class="text-2xl font-semibold mt-6 mb-4">5. Community and Communication</h2>
+            <p class="mb-4">- **Chat Use**: Players are encouraged to communicate and interact, but all communication should remain respectful. Offensive language or spamming is prohibited.</p>
+            <p class="mb-4">- **Reports and Feedback**: If you encounter any players violating the rules or experience technical issues, please report it through our support system. We take all feedback seriously to improve the arcade experience.</p>
+            <p class="mb-4">- **Social Media**: When posting about Gamnest on social media, always represent the brand respectfully. We love our community and appreciate positive engagement!</p>
+
+            <h2 class="text-2xl font-semibold mt-6 mb-4">6. Arcade Environment</h2>
+            <p class="mb-4">- **Safe Space**: Gamnest is committed to being a safe and inclusive environment for players of all ages. We do not tolerate discrimination, harassment, or hate speech of any kind.</p>
+            <p class="mb-4">- **Underage Players**: If you are under the age of 13, you must have permission from a parent or guardian to use our services.</p>
+            <p class="mb-4">- **Moderation and Reporting**: Our moderation team is actively monitoring the arcade to ensure that all players follow the rules. If you observe inappropriate behavior, please report it immediately.</p>
+
+            <h2 class="text-2xl font-semibold mt-6 mb-4">7. Violations and Penalties</h2>
+            <p class="mb-4">- **Warnings**: Minor infractions will result in a warning. Repeated offenses may lead to temporary or permanent bans.</p>
+            <p class="mb-4">- **Suspension or Ban**: Severe violations, including cheating, exploiting, or harmful behavior, will result in account suspension or permanent banning from the arcade.</p>
+            <p class="mb-4">- **Appeals**: If you feel your account was banned or suspended unfairly, you may submit an appeal. We will review each case thoroughly and fairly.</p>
+
+            <h2 class="text-2xl font-semibold mt-6 mb-4">8. Privacy and Data Protection</h2>
+            <p class="mb-4">- **Data Collection**: Gamnest Arcade collects necessary data to provide the best gaming experience. For more details, please refer to our [Privacy Policy](#).</p>
+            <p class="mb-4">- **Data Security**: We take your privacy seriously and use encryption to protect your personal data. Your information is never shared with third parties without your consent, except where required by law.</p>
+
+            <h2 class="text-2xl font-semibold mt-6 mb-4">9. Updates and Changes</h2>
+            <p class="mb-4">- **Policy Changes**: These rules and policies may be updated periodically to maintain a fair and secure environment. We encourage you to review them regularly to stay informed of any changes.</p>
+            <p class="mb-4">- **Game Updates**: Gamnest Arcade will periodically update games to improve gameplay and introduce new features. Keep your game client up to date for the best experience.</p>
+
+            <h2 class="text-2xl font-semibold mt-6 mb-4">10. Disclaimer</h2>
+            <p class="mb-4">- **Gameplay Availability**: While we strive for continuous uptime, Gamnest Arcade is not responsible for server downtimes, disruptions, or temporary unavailability.</p>
+            <p class="mb-4">- **Liability**: Gamnest Arcade is not liable for any loss or damage arising from the use of the arcade, including but not limited to data loss, technical issues, or disruptions in gameplay.</p>
+
+            <p class="mt-6 text-center text-sm text-gray-500">By using Gamnest Arcade, you agree to follow these rules and policies. Let’s keep the arcade a fun, fair, and friendly environment for everyone! Enjoy your time at Gamnest, where every game is a new adventure!</p>
+        </div>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="https://kit.fontawesome.com/da726f302a.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/game.js'%}"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

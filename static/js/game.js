@@ -35,7 +35,52 @@
       el: ".swiper-pagination",
     },
   });
+  document.addEventListener("DOMContentLoaded", function () {
+    // Function to show the selected tab and update the URL
+    function showTab(targetId) {
+        // Hide all tab wrappers
+        const wrappers = document.querySelectorAll('.game-wrapper, .support-wrapper, .qr-wrapper, .ticket-wrapper, .profile-wrapper');
+        wrappers.forEach(wrapper => {
+            wrapper.classList.add('hidden');
+        });
 
+        // Show the selected tab
+        const targetWrapper = document.getElementById(targetId);
+        if (targetWrapper) {
+            targetWrapper.classList.remove('hidden');
+        }
+
+        // Update the URL without reloading the page
+        history.pushState(null, null, `#${targetId}`);
+
+        // Highlight the active link in the app bar
+        const links = document.querySelectorAll('.icon-bar a');
+        links.forEach(link => {
+            link.classList.remove('active'); // Remove active class from all links
+            if (link.getAttribute('href') === `#${targetId}`) {
+                link.classList.add('active'); // Add active class to the current link
+            }
+        });
+    }
+
+    // Get the current hash from the URL
+    const currentHash = window.location.hash.substring(1);
+    if (currentHash) {
+        showTab(currentHash);
+    } else {
+        showTab('games'); // Default tab to show if no hash
+    }
+
+    // Add click event listeners to the icon bar links
+    const links = document.querySelectorAll('.icon-bar a');
+    links.forEach(link => {
+        link.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default anchor behavior
+            const targetId = this.getAttribute('href').substring(1);
+            showTab(targetId);
+        });
+    });
+});
   var swiper = new Swiper(".listmySwiper", {
     slidesPerView: 5,
     spaceBetween: 20,
@@ -93,6 +138,83 @@
       event.preventDefault();
       const targetId = this.getAttribute("data-target");
       showContent(targetId);
+
+      if(targetId == "qr"){
+        // QR code scanning success callback
+  const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+    console.log(decodedResult);
+    venueName = decodedText;
+    // Check if the QR code text is "Arcade plaza"
+    if (decodedText === "Arcade plaza" || decodedText === "GlowingSoft") {
+        // If the `ticketAvailability` element exists, show it
+        if (ticketAvailability && ticketAvailability.children.length > 0) {
+          venuenonavailability.style.display = "none"
+          ticketAvailability.classList.add("ticket-animate");
+            ticketAvailability.style.display = "block";
+        } else {
+            // Otherwise, show the no tickets available message
+            venuenonavailability.style.display = "none"
+            ticketNonAvailability.style.display = "block";
+            ticketNonAvailability.classList.add("ticket-animate");
+        }
+        
+        // Add blur effect to the background
+        appBody.classList.add("blur-background");
+    }else{
+      venuenonavailability.classList.add("ticket-animate")
+      venuenonavailability.style.display = "block"
+      appBody.classList.add("blur-background");
+    }
+    appBody.addEventListener("click", () => {
+      if (ticketNonAvailability) {
+          ticketNonAvailability.style.display = "none";
+          ticketNonAvailability.classList.remove("ticket-animate");
+      }
+
+      if (ticketAvailability) {
+          ticketAvailability.style.display = "none";
+          ticketAvailability.classList.remove("ticket-animate");
+      }
+      if (venuenonavailability) {
+        venuenonavailability.style.display = "none";
+        venuenonavailability.classList.remove("ticket-animate");
+    }
+      
+      appBody.classList.remove("blur-background");
+  });
+
+};
+
+// Configuration for QR code scanner
+        const config = {
+          fps: 20,
+          qrbox: {
+              width: 250,
+              height: 250
+          }
+      };
+    
+      // Create an instance of the QR scanner
+      const qrCodeScanner = new Html5Qrcode("qr-video-container");
+    
+      // Start scanning the QR code
+      qrCodeScanner.start(
+          { facingMode: "environment" }, // Use the environment camera
+          config,
+          qrCodeSuccessCallback
+      ).catch((err) => {
+          console.error("QR Code scanning failed", err);
+      });
+    
+      const refreshButton = document.querySelector("#qr-scanner #refresh");
+    
+    // Add an event listener to the refresh button if it exists
+    if (refreshButton) {
+        refreshButton.addEventListener("click", () => {
+            window.location.reload();
+        });
+    }
+      }
     });
   });
   
@@ -106,44 +228,46 @@
       document.getElementById("ticket").style.display = "none";
       document.getElementById("ownedticket").style.display = "block";
     });
-  const walletArrow = document.getElementById("walletarrow");
+    document.addEventListener("DOMContentLoaded", function () {
+      // Wallet Arrow Logic
+      const walletArrow = document.getElementById("walletarrow");
+      const otherPayment = document.getElementById("otherpayment");
   
-  // Wait for the DOM content to fully load
-document.addEventListener("DOMContentLoaded", function () {
-  // Wallet Arrow Logic
-  const walletArrow = document.getElementById("walletarrow");
-
-  if (walletArrow) {
-      walletArrow.addEventListener("click", function () {
-          if (walletArrow.src.includes("_content-right.png")) {
-              // Set image to arrow-up and display the other payment section
-              walletArrow.src = walletArrow.dataset.upArrow;
-              document.getElementById("otherpayment").style.display = "block";
-          } else if (walletArrow.src.includes("arrow-up.png")) {
-              // Set image to _content-right and hide the other payment section
-              walletArrow.src = walletArrow.dataset.rightArrow;
-              document.getElementById("otherpayment").style.display = "none";
-          }
-      });
-  }
-
-  // Payment Arrow Logic
-  const paymentArrow = document.getElementById("paymentarrow");
-
-  if (paymentArrow) {
-      paymentArrow.addEventListener("click", function () {
-          if (paymentArrow.src.includes("arrow-up.png")) {
-              // Set image to _content-right and hide the payment details section
-              paymentArrow.src = paymentArrow.dataset.rightArrow;
-              document.getElementById("paymentdetails").style.display = "none";
-          } else if (paymentArrow.src.includes("_content-right.png")) {
-              // Set image to arrow-up and display the payment details section
-              paymentArrow.src = paymentArrow.dataset.upArrow;
-              document.getElementById("paymentdetails").style.display = "block";
-          }
-      });
-  }
-});
+      if (walletArrow) {
+          walletArrow.addEventListener("click", function () {
+              const isRightArrow = walletArrow.src.includes("_content-right.png");
+              
+              // Update arrow image dynamically
+              walletArrow.src = isRightArrow
+                  ? "static/assets/arrow-up.png"
+                  : "static/assets/_content-right.png";
+              
+              // Toggle visibility of the other payment options
+              otherPayment.style.display = isRightArrow ? "block" : "none";
+          });
+      }
+  
+      // Payment Arrow Logic
+      const paymentArrow = document.getElementById("paymentarrow");
+      const paymentDetails = document.getElementById("paymentdetails"); // Ensure this ID exists in the HTML
+  
+      if (paymentArrow) {
+          paymentArrow.addEventListener("click", function () {
+              const isRightArrow = paymentArrow.src.includes("_content-right.png");
+  
+              // Update arrow image dynamically
+              paymentArrow.src = isRightArrow
+                  ? "static/assets/arrow-up.png"
+                  : "static/assets/_content-right.png";
+  
+              // Toggle visibility of payment details
+              if (paymentDetails) {
+                  paymentDetails.style.display = isRightArrow ? "block" : "none";
+              }
+          });
+      }
+  });
+  
 
   
     const settingsLink = document.getElementById("moreoption");
@@ -213,6 +337,57 @@ document.addEventListener("DOMContentLoaded", function () {
   const csrftoken = getCookie('csrftoken'); 
   
   // Support tab functionality
+
+  let currentContactInfo = '';
+  // Open the modal with relevant details
+  function openModal(type, content) {
+      const modal = document.getElementById('contactModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalContent = document.getElementById('modalContent');
+      const copiedMessage = document.getElementById('copiedMessage');
+
+      currentContactInfo = content; // Save the current content for copying
+
+      if (type === 'call') {
+          modalTitle.textContent = 'Call Us';
+          modalContent.textContent = `Phone Number: ${content}`;
+      } else if (type === 'email') {
+          modalTitle.textContent = 'Email Us';
+          modalContent.textContent = `Email: ${content}`;
+      }
+
+      // Hide the copied message by default when opening the modal
+      copiedMessage.classList.add('hidden');
+
+      modal.classList.remove('hidden');
+  }
+
+  // Close the modal
+  function closeModal() {
+      const modal = document.getElementById('contactModal');
+      modal.classList.add('hidden');
+  }
+
+  // Copy the contact information to clipboard
+  function copyToClipboard() {
+      const copiedMessage = document.getElementById('copiedMessage');
+
+      navigator.clipboard.writeText(currentContactInfo).then(() => {
+          // Display the success message inside the modal
+          copiedMessage.classList.remove('hidden');
+
+          // Optionally, you can hide the "Copied" message after a few seconds
+          setTimeout(() => {
+              copiedMessage.classList.add('hidden');
+          }, 2000); // Hide after 2 seconds
+      }).catch((err) => {
+          // In case of an error, you can handle it here
+          alert('Failed to copy: ', err);
+      });
+  }
+
+
+
   const support = document.getElementById('supportForm');
   const supportText = document.getElementById("supportText")
   const loader = document.getElementById("loader")
@@ -249,10 +424,14 @@ support && support.addEventListener('submit', function (e) {
           loader.style.display = "none"
 
           const successAlert = document.getElementById("success-alert")
-          successAlert.classList.add("successanimate")  // Show with animation
+          successAlert.classList.add("successanimate")  
           setTimeout(function(){
-              successAlert.classList.remove("successanimate")  // Hide after a while
+              successAlert.style.opacity = "0";
+              successAlert.style.transform = "translateY(-70%)"
+              
           }, 1500)
+
+          window.location.href = "./gamepage01"
         } else {
          
             supportError.textContent = 'Failed to submit the ticket: ' + data.message;
@@ -285,8 +464,12 @@ const editForm = document.getElementById('editForm');
 const submitButton = document.getElementById('profilebtn');
 const buttonText = document.getElementById('buttonText');
 const profileloader = document.getElementById('profileloader'); // Get the loader element
+const errorContainer = document.getElementById("errorContainer")
+const messageContainer = document.getElementById("messageContainer")
 
 editForm && editForm.addEventListener('submit', (e) => {
+  errorContainer = ''
+  messageContainer = ''
   e.preventDefault();
 
   // Show loader, hide "Done" text
@@ -326,7 +509,7 @@ editForm && editForm.addEventListener('submit', (e) => {
       method: 'POST',
       headers: {
           'X-CSRFToken': csrftoken,
-          'Accept': 'application/json' // Expect JSON response
+          'Content-Type': 'application/json' // Expect JSON response
       },
       body: formData
   })
@@ -337,20 +520,11 @@ editForm && editForm.addEventListener('submit', (e) => {
       return response.json();
   })
   .then(data => {
-      // Hide loader, show "Done" text
-      profileloader.style.display = "none";
-      buttonText.style.display = 'inline'; // Show the "Done" text
-
+      
       // Display the message based on status
       if (data.status === 'error') {
-          messageContainer.textContent = data.message;
-          messageContainer.classList.add('text-red-500');
       } else {
-          messageContainer.textContent = data.message;
-          messageContainer.classList.add('text-green-500');
-          setTimeout(() => {
-              window.location.href = "gamepage01";
-          }, 2000);
+        
       }
   })
   .catch(async error => {
@@ -385,116 +559,64 @@ var swiper = new Swiper(".gamesmySwiper", {
 });
 
 var venueName ;
-window.addEventListener("load", function () {
+
   const appBody = document.getElementById("qr"); 
   const ticketAvailability = document.getElementById("ticketavailability");
   const ticketNonAvailability = document.getElementById("ticketnonavailability");
-
-  // QR code scanning success callback
-  const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-      console.log(decodedResult);
-      venueName = decodedText;
-      // Check if the QR code text is "Arcade plaza"
-      if (decodedText === "Arcade plaza" || decodedText === "GlowingSoft") {
-          // If the `ticketAvailability` element exists, show it
-          if (ticketAvailability && ticketAvailability.children.length > 0) {
-            ticketAvailability.classList.add("ticket-animate");
-              ticketAvailability.style.display = "block";
-          } else {
-              // Otherwise, show the no tickets available message
-              ticketNonAvailability.style.display = "block";
-              ticketNonAvailability.classList.add("ticket-animate");
-          }
-          
-          // Add blur effect to the background
-          appBody.classList.add("blur-background");
-      }
-  };
-
-  // Configuration for QR code scanner
-  const config = {
-      fps: 20,
-      qrbox: {
-          width: 250,
-          height: 250
-      }
-  };
-
-  // Create an instance of the QR scanner
-  const qrCodeScanner = new Html5Qrcode("qr-video-container");
-
-  // Start scanning the QR code
-  qrCodeScanner.start(
-      { facingMode: "environment" }, // Use the environment camera
-      config,
-      qrCodeSuccessCallback
-  ).catch((err) => {
-      console.error("QR Code scanning failed", err);
-  });
-
-  const refreshButton = document.querySelector("#qr-scanner #refresh");
-
-// Add an event listener to the refresh button if it exists
-if (refreshButton) {
-    refreshButton.addEventListener("click", () => {
-        window.location.reload();
-    });
-}
-  // Hide availability and remove blur when clicking on appBody
-  appBody.addEventListener("click", () => {
-      if (ticketNonAvailability) {
-          ticketNonAvailability.style.display = "none";
-          ticketNonAvailability.classList.remove("ticket-animate");
-      }
-
-      if (ticketAvailability) {
-          ticketAvailability.style.display = "none";
-          ticketAvailability.classList.remove("ticket-animate");
-      }
-
-      appBody.classList.remove("blur-background");
-  });
-});
-
-
-function handleTicketClick(event) {
-  // Get the clicked button element and data
-  const button = event.currentTarget;
-  const ticketName = button.getAttribute("data-tickettitle");
-  const ticketCount = button.getAttribute("data-ticketcount");
-  const ticketprice = button.getAttribute("data-ticketprice");
-  const ticketpurchaseid = button.getAttribute("data-purchasedticketid");
-  const ticketid = button.getAttribute("data-ticketid");
-  const userid = button.getAttribute("data-userid");
+  const venuenonavailability = document.getElementById("venuenonavailability")
   
-
-  fetch("gamepage01", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": csrftoken,
-    },
-    body: JSON.stringify({
-      ticketpurchaseid: ticketpurchaseid,
-      userid: userid,
-      venueName:venueName,
-      ticketprice:ticketprice,
+  
+  // Hide availability and remove blur when clicking on appBody
+ 
+  const qrloader = document.getElementById("qrloader");
+  const qrbody = document.getElementById("qr");
+  
+  function handleTicketClick(event) {
+      // Get the clicked button element and data
+      const button = event.currentTarget;
+      const ticketName = button.getAttribute("data-tickettitle");
+      const ticketCount = button.getAttribute("data-ticketcount");
+      const ticketprice = button.getAttribute("data-ticketprice");
+      const ticketpurchaseid = button.getAttribute("data-purchasedticketid");
+      const ticketid = button.getAttribute("data-ticketid");
+      const userid = button.getAttribute("data-userid");
+  
+      // Show the loader and hide the QR body
+      qrbody.style.display = "none";
+      qrloader.style.display = "flex"; // Show the loader
+  
+      // Fetch request to update ticket
+      fetch("gamepage01", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrftoken,
+          },
+          body: JSON.stringify({
+              ticketpurchaseid: ticketpurchaseid,
+              userid: userid,
+              venueName: venueName,
+              ticketprice: ticketprice,
+          }),
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              console.log("Ticket updated or removed successfully");
+              qrbody.style.display = "none";
+              qrloader.style.display = "flex";
+              window.location.href = "gamepage01";
+          } else {
+              console.error("Error:", data.message);
+              qrbody.style.display = "none";
+              qrloader.style.display = "flex";
+          }
+      })
+      .catch(error => console.error("Error:", error))
+      qrbody.style.display = "none";
+              qrloader.style.display = "flex";
       
-
-    }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      console.log("Ticket updated or removed successfully");
-      window.location.reload();
-    } else {
-      console.error("Error:", data.message);
-    }
-  })
-  .catch(error => console.error("Error:", error));
-}
-
+  }
 
 
 
@@ -538,7 +660,7 @@ ticketButtons.forEach(button => {
  console.log(ticketData);
 
  // Check if ticket data exists
- if (ticketData != null) {
+ if (ticketData) {
      // Update the product name
      document.getElementById('productname').textContent = ticketData.name;
 

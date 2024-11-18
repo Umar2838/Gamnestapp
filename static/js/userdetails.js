@@ -34,6 +34,29 @@ function validateForm() {
     }
     return isValid;
 }
+// Function to toggle active class on gender selection
+function toggleGenderActive() {
+    const maleGender = document.getElementById('maleGender');
+    const femaleGender = document.getElementById('femaleGender');
+
+    // Remove the 'active' class from both gender options
+    maleGender.classList.remove('active');
+    femaleGender.classList.remove('active');
+
+    // Check which gender is selected and add the 'active' class to the selected option
+    const gender = document.querySelector('input[name="gender"]:checked').value;
+    if (gender === 'Male') {
+        maleGender.classList.add('active');
+    } else if (gender === 'Female') {
+        femaleGender.classList.add('active');
+    }
+}
+
+// Attach event listeners to radio buttons
+document.querySelectorAll('input[name="gender"]').forEach(radio => {
+    radio.addEventListener('change', toggleGenderActive);
+});
+
 
 // Event listener for form submission
 document.getElementById('donebtn').addEventListener("click", (event) => {

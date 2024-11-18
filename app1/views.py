@@ -42,7 +42,7 @@ def signupemail(request):
             userpassword = form.cleaned_data['password']
             user = User.objects.create_user(username, useremail, userpassword)
             user.save()
-            return redirect('userdetails')  # Redirect to login page after successful signup
+            return redirect('loginemail')  # Redirect to login page after successful signup
         else:
             # Return form errors as JSON response
             errors = []
@@ -74,8 +74,20 @@ def loginemail(request):
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
+            # Log in the user
             login(request, user)
-            return JsonResponse({'success': True, 'redirect_url': '/userdetails'})  # Redirect URL after successful login
+            
+            # Get the associated user profile
+            user_profile = UserProfile.objects.get(user=user)
+            
+            if user_profile.first_login:
+                # Redirect to userdetails if first login
+                user_profile.first_login = False  # Update the field
+                user_profile.save()  # Save the change to the database
+                return JsonResponse({'success': True, 'redirect_url': '/userdetails'})
+            else:
+                # Redirect to gamepage01 for subsequent logins
+                return JsonResponse({'success': True, 'redirect_url': '/gamepage01'})
         else:
             return JsonResponse({'success': False, 'message': 'Invalid username or password.'})
     
@@ -95,7 +107,7 @@ def forgetPassword(request):
             request.session['reset_timestamp'] = datetime.now().timestamp()
 
             # Generate reset link with the timestamp as a query parameter
-            reset_link = f"http://gamenest.se/resetPassword/{user.username}/?timestamp={request.session['reset_timestamp']}"
+            reset_link = f"https://gamenest.se/resetPassword/{user.username}/?timestamp={request.session['reset_timestamp']}"
             send_mail(
                 "Gamnest Reset Password Link",
                 f"Hey {user}, to reset your password please click on the following link:\n{reset_link}",
@@ -110,7 +122,7 @@ def forgetPassword(request):
         else:
             print("User does not exist")    
 
-    return render(request, 'forgetpassword.html')
+    return render(request, 'forgetPassword.html')
 
 def emailverifymessage(request):
     email = request.GET.get('email')
@@ -163,27 +175,35 @@ def resetPassword(request, user):
 
 
 
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import UserProfile
+import json
+
 def userdetails(request):
     if request.method == 'POST':
-        data = json.loads(request.body)
-        user = request.user
-        name = data.get('name')
-        gender = data.get('gender')
+        # Ensure the user is authenticated
+            data = json.loads(request.body)
+            user = request.user
+            name = data.get('name')
+            gender = data.get('gender')
 
-        # Update or create the UserProfile
-        userdetails, created = UserProfile.objects.get_or_create(user=user)
+            # Get or create the UserProfile
+            userdetails, created = UserProfile.objects.get_or_create(user=user)
 
-        if name:
-            userdetails.name = name
-        if gender:
-            userdetails.gender = gender
+            # Update the userprofile fields if data is provided
+            if name:
+                userdetails.name = name
+            if gender:
+                userdetails.gender = gender
 
-        userdetails.save()
+            userdetails.save()
 
-        # Return success response as JSON
-        return JsonResponse({'status': 'success'})
+            # Return a success response
+            return JsonResponse({'status': 'success'})
 
-    # For non-POST requests, render the HTML page
+
     return render(request, 'userdetails.html')
 
 def gamepage01(request):
@@ -376,12 +396,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.password_validation import validate_password
 from django.http import HttpResponse
 from .models import UserProfile
-
 def editProfile(request):
     user = request.user
     try:
         user_profile = UserProfile.objects.get(user=user)
         errormessage = ""
+        successmessage = "Profile is up-to-date."
         if request.method == 'POST':
             # Collect data from form
             fileInput = request.FILES.get('fileInput')
@@ -394,6 +414,7 @@ def editProfile(request):
             confirmPassword = request.POST.get('confirmPassword')
 
             # Update user fields
+            
             if username:
                 user.username = username
             if email:
@@ -410,34 +431,36 @@ def editProfile(request):
             user_profile.save()
 
             # Password change logic
-            if currentPassword and newPassword and confirmPassword:
+            if currentPassword or newPassword or confirmPassword:
                 # Step 1: Check if the current password is correct
                 if not user.check_password(currentPassword):
                     errormessage = 'Current password is incorrect.'
-                    return redirect('editprofile')  # Redirect back to the form page
+                else:
+                    # Step 2: Check if the new password matches confirm password
+                    if newPassword != confirmPassword:
+                        errormessage = 'New password and confirm password do not match.'
+                    else:
+                        # Step 3: Validate the new password
+                        try:
+                            validate_password(newPassword, user=user)
+                            # Step 4: Update the user's password
+                            user.set_password(newPassword)
+                            user.save()
+                            successmessage = "Password change successfully!"
+                            return redirect('loginemail')  # Redirect to login page after changing password
+                        except ValidationError as e:
+                            errormessage = e.messages[0]  # Get the first error message
 
-                # Step 2: Check if the new password matches confirm password
-                if newPassword != confirmPassword:
-                    errormessage = 'New password and confirm password do not match.'
-                    return redirect('editprofile')
-
-                # Step 3: Validate the new password
-                try:
-                    validate_password(newPassword, user=user)
-                except ValidationError as e:
-                    for message in e.messages:
-                        errormessage = message
-                    return redirect('editprofile')
-
-                # Step 4: Update the user's password
-                user.set_password(newPassword)
-                user.save()
-
-                update_session_auth_hash(request, user)  # Keeps the user logged in
-                return redirect('loginemail')  # Redirect to login page
-
-            # Redirect to the game page after a successful profile update
-            return redirect("gamepage01")
+            # If there was an error, render the form again with the error message
+            return render(request, 'editprofile.html', {
+                'username': user.username,
+                'email': user.email,
+                'user_profile': user_profile,
+                'name': user_profile.name,
+                'dob': user_profile.dob,
+                'errormessage': errormessage,
+                'successmessage':successmessage
+            })
 
         # Render the profile edit page if GET request
         return render(request, 'editprofile.html', {
@@ -446,7 +469,7 @@ def editProfile(request):
             'user_profile': user_profile,
             'name': user_profile.name,
             'dob': user_profile.dob,
-            'errormessage':errormessage
+            'errormessage': errormessage
         })
 
     except UserProfile.DoesNotExist:
@@ -488,3 +511,6 @@ def location(request):
 def setting(request):
     return render(request,'setting.html')
 
+def rulesAndPolicy(request):
+
+    return render(request,'rulesAndPolicy.html')

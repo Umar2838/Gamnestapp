@@ -1,5 +1,5 @@
 {% load static %}
-<!-- {% load socialaccount %} -->
+{% load socialaccount %}
 
 <!DOCTYPE html>
 
@@ -26,11 +26,15 @@
       <img class="logo" src="{% static '/assets/brand-logo.png' %}" alt="Brand Logo" />
     </div>
     <p class="text-gray-700 font-bold mb-6">Where the thrill of classic arcade games meets modern excitement.</p>
+    <a href="{% provider_login_url 'facebook' %}" >
       <button type="button" class="btn bg-transparent flex gap-10 items-center  w-full py-2 mb-3 rounded-full"><img
         src="{% static 'assets/facebook.png'%}" /> Login with Facebook</button>
-          <button type="button" class="btn bg-transparent flex gap-10 items-center border-1 w-full py-2 mb-3 rounded-full">
+      </a>  
+        <a href="{% provider_login_url 'google' %}" >
+        <button type="button" class="btn bg-transparent flex gap-10 items-center border-1 w-full py-2 mb-3 rounded-full">
             <img src="{% static 'assets/google.png' %}" />Login with Google
           </button>
+        </a> 
     <a href="./loginemail">
 
       <button type="button"  class="btn bg-transparent flex gap-10 items-center  w-full py-2 rounded-full"><img

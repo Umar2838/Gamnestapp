@@ -1,6 +1,6 @@
 function redirectToPage() {
     setTimeout(function() {
-      window.location.href = "signup";  
+      window.location.href = "loginshow";  
     }, 3000); 
   }
   
@@ -13,7 +13,7 @@ const loginForm = document.getElementById("loginform");
     
     loginForm && loginForm.addEventListener("submit", (e) => {
         e.preventDefault();
-
+        error.textContent = ""
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
         // const agreeCheckbox = document.getElementById("agreeCheckbox").checked;
@@ -81,39 +81,47 @@ const loginForm = document.getElementById("loginform");
 
 const signupForm = document.getElementById("signupForm");
 
-signupForm && signupForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+if (signupForm) {
+    signupForm.addEventListener("submit", (e) => {
+        e.preventDefault();
 
-    const formData = new FormData(signupForm);
-    const signupButton = document.getElementById("signupButton");
-    const signupButtonText = document.getElementById("signupbuttonText");
-    const signupLoader = document.getElementById("signuploader");
-    const signuperror = document.getElementById("signuperror");
+        const formData = new FormData(signupForm);
+        const signupButton = document.getElementById("signupButton");
+        const signupButtonText = document.getElementById("signupbuttonText");
+        const signupLoader = document.getElementById("signuploader");
+        const signuperror = document.getElementById("signuperror");
 
-    // Show loader and hide button text
-    signupButton.disabled = true;
-    signupButtonText.style.display = "none";
-    signupLoader.style.display = "block";
+        // Change the button color to yellow when the form is submitted
+        signupButton.classList.add("yellow-button");
 
-    fetch("signupemail", {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            window.location.href = data.redirect_url;
-        } else {
-            signuperror.textContent = data.message;
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        signuperror.textContent = 'An error occurred. Please try again. (400)';
-    })
-    .finally(() => {
-        signupButton.disabled = false;
-        signupButtonText.style.display = "inline";
-        signupLoader.style.display = "none";
+        // Show loader and hide button text
+        signupButton.disabled = true;
+        signupButtonText.style.display = "none";
+        signupLoader.style.display = "block";
+
+        // Make the POST request
+        fetch("signupemail", {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect_url;
+            } else {
+                signuperror.textContent = data.message;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            signuperror.textContent = 'An error occurred. Please try again. (400)';
+        })
+        .finally(() => {
+            // Reset button appearance after the process finishes
+            signupButton.classList.remove("yellow-button");  // Optional: Remove the yellow color
+            signupButton.disabled = false;
+            signupButtonText.style.display = "inline";
+            signupLoader.style.display = "none";
+        });
     });
-});
+}

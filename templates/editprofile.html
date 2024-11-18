@@ -19,7 +19,7 @@
         <div class="sticky top-0 bg-white z-10">
 
             <div class="relative flex items-center justify-center w-full mt-2">
-                <a href="gamepage01" class="absolute left-0">
+                <a href="gamepage01#profile" class="absolute left-0">
                     <img src="{% static 'assets/back.png' %}" alt="Back" class="w-6 h-6">
                 </a>
                 <div class="font-semibold text-xl">Edit Profile</div>
@@ -91,6 +91,9 @@
                             src="{% static 'assets/edit-2black.png' %}" />
                     </div>
                 </label>
+                <div id="errorContainer" class="text-red-500 font-bold text-center">{{errormessage}}</div>
+                <div id="successContainer" class="text-yellow-500 font-bold text-center">{{successmessage}}</div>
+
 
                 <div class="flex justify-between items-center">
                     <div>Change Password?</div>
@@ -101,8 +104,6 @@
                         </label>
                     </div>
                 </div>
-                <p class="text-red-400 text-center">{{ errormessage }}</p>
-
                 <!-- Password fields container -->
                 <div id="passwordFields">
                     <label class="block text-gray-700 text-sm font-medium relative">
