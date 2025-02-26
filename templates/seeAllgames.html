@@ -30,6 +30,7 @@
              <img class="filter-icon" src="{%static 'assets/filter.png'%}." />
         </div>
         <ul class="allgamesUL" >
+            {% for game in games  %}
             <li class="flex gap-10 allgamesli" >
 
                 <div>
@@ -37,16 +38,17 @@
                 </div>
                 
                     <div>
-                        <p class="" >Assassian's Creed</p>
+                        <p class="" >{{game.Genre}}</p>
                         <div class="flex item-center gap-1" >
-                            <p class="font-semibold ">4.5</p>
+                            <p class="font-semibold ">{{game.rating}}</p>
                             <span class="stars" style="color: gold; font-size: 20px;">★★★★☆</span>
                         </div>
-                        <p class="text-[#CCCCCC]">Pac Man</p>
+                        <p class="text-[#CCCCCC]">{{game.name}}</p>
                     </div>        
                     <div><p class="tag" >New</p></div>      
 
             </li>
+            {% endfor %}
             <li class="flex gap-10 allgamesli" >
 
                 <div>
@@ -138,6 +140,6 @@
     </div>
 
     <script src="https://cdn.tailwindcss.com"></script>
-
+    <script src="{% static 'js/games.js' %}" ></script>
 </body>
 </html>

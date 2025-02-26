@@ -72,10 +72,14 @@
 
         <div class="swiper">
             <div class="swiper-wrapper">
-                <!-- Slides -->
-                <img class="swiper-slide" src="{% static '/assets/Ads.png' %}" />
-                <img class="swiper-slide" src="{% static '/assets/Ads.png' %}" />
-                <img class="swiper-slide" src="{% static '/assets/Ads.png' %}" />
+                
+                {% for banner in banners %}
+                <div class="swiper-slide">
+                    <a href="{{banner.link}}" >
+                <img  src="https://dashboard.gamenest.se/{{ banner.banner }}" alt="Banner">
+                    </a>
+                </div>
+            {% endfor %}
             </div>
 
             <div class="custom-swiper-pagination"></div>
@@ -85,34 +89,20 @@
         </div>
 
         <div class="gamesswiper gamesmySwiper mt-4">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide games-slide">
-        <img src="{%static 'assets/images 1.png'%}" />
-        <div class="category-text">
-            <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
-            <p class="font-semibold text-white">PacMan</p>
-            <p class="text-[#CCCCCC]">Arcade</p>
-        </div>
-      </div>
-      <div class="swiper-slide games-slide">
-        <img src="{%static 'assets/images 1.png'%}" />
-        <div class="category-text">
-            <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
-            <p class="font-semibold text-white">PacMan</p>
-            <p class="text-[#CCCCCC]">Arcade</p>
-        </div>
-      </div>
-      <div class="swiper-slide games-slide">
-    
-        <img src="{%static 'assets/images 1.png'%}" />
-        <div class="category-text">
-            <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
-            <p class="font-semibold text-white">PacMan</p>
-            <p class="text-[#CCCCCC]">Arcade</p>
-        </div>
-      </div>
-     
-      </div>
+            <div class="swiper-wrapper">
+                {% for game in games %}
+                <div class="swiper-slide games-slide">
+                    <img src="{% static 'assets/images 1.png' %}" />
+                    <div class="category-text">
+                        <p class="font-semibold text-white" style="font-size:14px">{{ game.name }}</p>
+                        <p font-size: 14px; class="text-[#CCCCCC]">{{ game.Genre }}</p>
+                        <div class="flex gap-2 items-center justify-center" style="font-size: 14px;">
+                            <div class="rating" data-rating="{{ game.rating }}"></div> <!-- Placeholder for stars -->
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
       
      
     </div>
@@ -126,21 +116,17 @@
 
         <div class="swiper  categories-slider">
             <div class="swiper-wrapper">
+                {% for genre in games %}
                 <div class="swiper-slide relative">
                     <img class="category-img object-fit-cover" src="{%static 'assets/download 1.png' %}" />
-                    <div class="category-text">
-                        <p class="font-semibold text-white">Strategy</p>
-                        <p class="text-[#CCCCCC]">Use your best strategy and beat the enemy</p>
+                    <div class="category-text" >
+                        <p class="font-semibold text-white "style="font-size: 14px;">{{genre.Genre}}</p>
+                        <p class="text-[#CCCCCC]"style="font-size: 14px;">Use your best strategy and beat the enemy</p>
                     </div>
                 </div>
+                {% endfor %}
               
-                <div class="swiper-slide">
-                    <img class="category-img" src="{%static 'assets/download 1.png' %}" />
-                    <div class="category-text">
-                        <p class="font-semibold text-white">Puzzle</p>
-                        <p class="text-[#CCCCCC]">Solve challenging puzzles to progress further</p>
-                    </div>
-                </div>
+            
             </div>
             <div class="custom-swiper-pagination"></div>
         </div>
@@ -159,14 +145,18 @@
         
         <div style="margin-bottom:50px;border-radius: none; padding: 10px;" class="swiper listmySwiper">
             <div  class="swiper-wrapper" style="margin-bottom: 0px;" >
+                {% for game in games %}
               <div class="swiper-slide swiperCard">
-                <img src="{%static 'assets/images 1.png'%}" />
+                <img src="{% static 'assets/images 1.png' %}" />
                 <div class="category-text">
-                    <div class="flex gap-2 items-center justify-center" style="font-size: 12px;"  ><div>4.5</div><div >⭐⭐⭐⭐</div></div>
-                    <p class="font-semibold text-white">PacMan</p>
-                    <p class="text-[#CCCCCC]">Arcade</p>
+                    <p class="font-semibold text-white" style="font-size:14px">{{ game.name }}</p>
+                    <p font-size: 14px; class="text-[#CCCCCC]">{{ game.Genre }}</p>
+                    <div class="flex gap-2 items-center justify-center" style="font-size: 14px;">
+                        <div class="rating" data-rating="{{ game.rating }}"></div> <!-- Placeholder for stars -->
+                    </div>
                 </div>
               </div>
+              {% endfor %}
               <div class="swiper-slide swiperCard">
                 <img src="{%static 'assets/images 1.png'%}" />
                 <div class="category-text">
@@ -300,15 +290,34 @@
             <input class="support-input" name="title" id="title" placeholder="Title of issue..." />
             <h1 class="font-semibold pt-3 text-lg">Description</h1>
             <textarea class="support-textarea" name="description"  id="description" placeholder="What us going on..."></textarea>
-            <h1 class="font-semibold text-lg">Upload Attachment</h1>
-            <div class="support-attachment relative" onclick="document.getElementById('fileInput').click()">
+            {% comment %} <h1 class="font-semibold text-lg">Upload Attachment</h1> {% endcomment %}
+            {% comment %} <div class="support-attachment relative" onclick="document.getElementById('fileInput').click()">
                 <div>
                     <img src="{%static 'assets/clarity_attachment-line.png'%}" style="width:16px;"
                         class="absolute top-3 right-2" />
+                    <p id="fileName" class="text-gray-600">No file chosen</p> <!-- File name preview -->
                 </div>
                 <!-- Hidden File Input -->
-                <input type="file" id="fileInput" accept="image/*" style="display: none;" />
+                <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="showFileName(event)" />
+            </div> {% endcomment %}
+            <h1 class="font-semibold text-lg">Select venue</h1>
+            <div class="scrollable-radios">
+                {% for venue in venuesName %}
+                <p class="checkbx checkbx2">
+                    <input 
+                        type="radio" 
+                        id="venue_{{ forloop.counter }}"  
+                        name="venues"
+                        class="venueCheckbox"
+                        value="{{ venue.name }}" 
+                        required> <!-- Ensure at least one selection -->
+                    <label class="pt-2" for="venue_{{ forloop.counter }}">{{ venue.name }}</label>
+                </p>
+                {% endfor %}
             </div>
+            
+            
+            
         </div>
         <small class="text-red-500" id="supportError" ></small>
 
@@ -324,6 +333,32 @@
                      </div>
                  </center>              </button>
     </form>
+
+     <!-- Success Modal -->
+     <div class="modal fade" id="supportsuccessModal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body p-3">
+                    <center><img src="{% static 'assets/checked.png' %}" alt="Success Icon" /></center>
+                    <h1 id="supportsuccess" class="success-text"
+                        style="color:#32ba7c;text-align:center;padding-top:10px;font-size:24px;"></h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Error Modal -->
+    <div class="modal fade" id="supporterrorModal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body p-3">
+                    <center><img src="{% static 'assets/mark.png' %}" alt="Error Icon" /></center>
+                    <h1 id="supporterror" class="error-text"
+                        style="text-align:center;padding-top:10px;font-size:24px;"></h1>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <!--  -->
@@ -354,11 +389,11 @@
         </div>
 
         <!-- Ticket Availability Section -->
-        {% if purchasedTicket %}
+        {% if purchasedTicket  %}
         <div class="ticketavailability" id="ticketavailability" style="display: none;">
             <p class="text-center pt-1">Select the type of ticket you want to use</p>
             {% for ticket in purchasedTicket %}
-            <button class="ticket-availabe w-full overflow-y-scroll"  data-ticketid="{{ ticket.ticketid }}" data-purchasedticketid = "{{ticket.id}}" data-ticketprice="{{ticket.ticketprice}}" data-tickettitle="{{ticket.ticketname}}" data-ticketcount = "{{ticket.ticket_count}}" data-userid="{{ticket.user_id}}" onclick="handleTicketClick(event)">
+            <button class="ticket-availabe w-full overflow-y-scroll"  data-ticketid="{{ ticket.ticketid }}" data-ticket-status={{"ticket.status"}} data-purchasedticketid = "{{ticket.id}}" data-ticketprice="{{ticket.ticketprice}}" data-tickettitle="{{ticket.ticketname}}" data-ticketcount = "{{ticket.ticket_count}}" data-userid="{{ticket.user_id}}" onclick="handleTicketClick(event)">
                 <div><img src="{% static 'assets/star-2 1.png' %}" /> </div>
                 <div>
                     <h1 class="font-bold">{{ ticket.ticketname }} <span class="font-light">ticket</span></h1>
@@ -369,8 +404,8 @@
         </div>
         {% else %}
         <!-- No Ticket Available Section -->
-        <div class="ticketnonavailability" id="ticketnonavailability" style="display: none;">
-            <p class="text-center font-bold pt-4">No tickets available</p>
+        <div class="ticketnonavailability pb-14" id="ticketnonavailability" style="display: none;">
+            <p class="text-center font-bold pb-14">No tickets available</p>
             <button onclick="(function() {
                 window.location.href = '#ticket'
                 document.getElementById('qr').classList.add('hidden');
@@ -386,8 +421,8 @@
         </div>
         {% endif %}
         
-        <div class="ticketnonavailability mb-[100px]" id="venuenonavailability" style="display: none;">
-            <p class="text-center text-red-600 font-bold pt-4">No Venue available</p>
+        <div class="ticketnonavailability mb-[80px]" id="venuenonavailability" style="display: none;">
+            <p class="text-center text-red-600 font-bold pb-12">No Venue available</p>
         
         </div>
     
@@ -439,7 +474,7 @@
             <div>
                 <h1 class="font-bold">{{tickets.name}} <span class="font-light">ticket</span></h1>
             </div>
-            <a class="ticket-buy font-bold" data-id="{{tickets.id}}" data-name="{{tickets.name}}" data-price="{{tickets.price}}"><button>SEK{{tickets.price}}</button></a>
+            <a class="ticket-buy font-bold" data-id="{{tickets.id}}" data-name="{{tickets.name}}" data-price="{{tickets.price}}" data-credits="{{tickets.credits}}"><button>SEK{{tickets.price}}</button></a>
         </div>
         {% endfor %}
         
@@ -475,7 +510,7 @@
             <div>
                 <h1 class="font-bold">{{purchasedTicket.ticketname}} <span class="font-light">ticket</span></h1>
             </div>
-            <div  class="ticket-count font-bold">{{purchasedTicket.ticket_count}}</div>
+            <div  class="ticket-count font-bold">{{purchasedTicket.credits}}</div>
         </div>
         {% endfor %}
 
@@ -640,6 +675,10 @@
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     
     <script src="{% static 'js/game.js'%}"></script>
+    <script>
+        var venueNames = {{ venuesName|safe }};
+    </script>
+    
 
 </body>
 

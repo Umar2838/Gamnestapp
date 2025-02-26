@@ -27,32 +27,44 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.core.mail import send_mail
 from gamnestmobile.settings import EMAIL_HOST_USER
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 def index(request):
     return render(request,'index.html')
 def signup(request):
     return render(request,'signup.html')
+
+@csrf_exempt
 def signupemail(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            useremail = form.cleaned_data['email']
-            userpassword = form.cleaned_data['password']
-            user = User.objects.create_user(username, useremail, userpassword)
-            user.save()
-            return redirect('loginemail')  # Redirect to login page after successful signup
-        else:
-            # Return form errors as JSON response
-            errors = []
-            for error in form.errors.values():
-                errors.append(error[0])
+        try:
+            data = json.loads(request.body)
+            username = data.get("username")
+            email = data.get("email")
+            password = data.get("password")
             
-    else:
-        form = UserRegistrationForm()
+            if not username or not email or not password:
+                return JsonResponse({"success": False, "message": "All fields are required"}, status=400)
+            
+            if User.objects.filter(username=username).exists():
+                return JsonResponse({"success": False, "message": "Username already exists"}, status=400)
+            
+            if User.objects.filter(email=email).exists():
+                return JsonResponse({"success": False, "message": "Email already exists"}, status=400)
+            
+            user = User.objects.create_user( first_name=username , username=email, email=email, password=password)
+            
+            
+            return JsonResponse({"success": True, "message": "User registered successfully", "redirect_url": "/loginemail"})
+        
+        except json.JSONDecodeError:
+            return JsonResponse({"success": False, "message": "Invalid JSON format"}, status=400)
     
-    return render(request, 'signupemail.html', {'form': form})
+    return render(request, 'signupemail.html')
+
 
 
 def loginshow(request):
@@ -63,34 +75,41 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages  # for displaying error messages
 
+@csrf_exempt
 def loginemail(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        
-        if not username or not password:
-            return JsonResponse({'success': False, 'message': 'Both username and password are required.'})
-        
-        user = authenticate(request, username=username, password=password)
-        
-        if user is not None:
-            # Log in the user
-            login(request, user)
+        try:
+            data = json.loads(request.body)
+            username = data.get('email')
+            password = data.get('password')
+
+            if not username or not password:
+                return JsonResponse({'success': False, 'message': 'Both email and password are required.'}, status=400)
+
+            user = authenticate(request, username=username, password=password)
             
-            # Get the associated user profile
-            user_profile = UserProfile.objects.get(user=user)
-            
-            if user_profile.first_login:
-                # Redirect to userdetails if first login
-                user_profile.first_login = False  # Update the field
-                user_profile.save()  # Save the change to the database
-                return JsonResponse({'success': True, 'redirect_url': '/userdetails'})
+            if user is not None:
+                login(request, user)
+                if not user.userprofile:
+                    UserProfile.objects.create(user=user, first_login=True)
+
+                # Fetch user profile to check first login
+                try:
+                    user_profile = UserProfile.objects.get(user=user)
+                    if user_profile.first_login:
+                        user_profile.first_login = False
+                        user_profile.save()
+                        return JsonResponse({'success': True, 'message': 'Login successful.', 'redirect_url': '/userdetails'})
+                    else:
+                        return JsonResponse({'success': True, 'message': 'Login successful.', 'redirect_url': '/gamepage01'})
+                except UserProfile.DoesNotExist:
+                    return JsonResponse({'success': True, 'message': 'Login successful.', 'redirect_url': '/gamepage01'})
             else:
-                # Redirect to gamepage01 for subsequent logins
-                return JsonResponse({'success': True, 'redirect_url': '/gamepage01'})
-        else:
-            return JsonResponse({'success': False, 'message': 'Invalid username or password.'})
-    
+                return JsonResponse({'success': False, 'message': 'Invalid email or password.'}, status=401)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid request format.'}, status=400)
+
     return render(request, 'login.html')
 
 
@@ -107,7 +126,7 @@ def forgetPassword(request):
             request.session['reset_timestamp'] = datetime.now().timestamp()
 
             # Generate reset link with the timestamp as a query parameter
-            reset_link = f"https://gamenest.se/resetPassword/{user.username}/?timestamp={request.session['reset_timestamp']}"
+            reset_link = f" http://127.0.0.1:8000/resetPassword/{user.username}/?timestamp={request.session['reset_timestamp']}"
             send_mail(
                 "Gamnest Reset Password Link",
                 f"Hey {user}, to reset your password please click on the following link:\n{reset_link}",
@@ -206,17 +225,43 @@ def userdetails(request):
 
     return render(request, 'userdetails.html')
 
+import json
+import requests
+from datetime import datetime
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.db.models import Sum
+from .models import UserProfile, PurchasedTickets, VenueTicketSummary
+
 def gamepage01(request):
     user = request.user
+    venuesName = get_venue_name()  
     print(user)
     try:
         user_profile = UserProfile.objects.get(user=user)
         name = UserProfile.objects.get(user=user) 
+
+        # Fetch tickets, banners, and games
         response = requests.get('https://dashboard.gamenest.se/api/getTickets/')
         tickets = response.json()
+        
+        response = requests.get('https://dashboard.gamenest.se/api/carousel-banners/')
+        banners_response = response.json()
+        banners = banners_response.get("data", [])  
+        active_banners = [banner for banner in banners if banner.get('is_active')]
+
+        games_response = requests.get('https://dashboard.gamenest.se/api/Games')
+        games = games_response.json()
+
         purchasedTicket = PurchasedTickets.objects.filter(user=user)
         total_count = PurchasedTickets.objects.filter(user=user).aggregate(total=Sum('ticket_count'))['total']
 
+        # Fetch venue names and IDs
+        venue_response = requests.get("https://dashboard.gamenest.se/api/getVenuename/")
+        venues_data = venue_response.json()
+
+        # Create a mapping of venue names to venue IDs
+        venue_mapping = {venue["name"]: venue["id"] for venue in venues_data}
 
     except UserProfile.DoesNotExist:
         user_profile = None
@@ -226,16 +271,31 @@ def gamepage01(request):
             data = json.loads(request.body)
             ticketpurchaseid = data.get("ticketpurchaseid")
             userid = data.get("userid")
-            venue_name = data.get("venueName")  # Get venue name from request data
-            ticket_price = float(data.get("ticketprice"))  # Get ticket price from request data
+            venue_name = data.get("venueName")
+            ticket_price = float(data.get("ticketprice"))
+
+            # Get venue ID from venue name
+            venue_id = venue_mapping.get(venue_name)
+            if not venue_id:
+                return JsonResponse({"success": False, "message": "Invalid venue name"})
+
+            # Find ticket status from API response
+            ticket_status = None
+            for ticket in tickets:
+                if ticket["id"] == int(ticketpurchaseid):  # Match ticket ID
+                    ticket_status = ticket["status"].get(str(venue_id))  # Get status for venue ID
+                    break
+
+            if ticket_status == "inactive":
+                return JsonResponse({"success": False, "message": "Ticket is inactive for this venue"})
 
             # Fetch the specific purchased ticket
             purchased_ticket = PurchasedTickets.objects.get(id=ticketpurchaseid, user_id=userid)
 
             # Check the ticket count
-            if purchased_ticket.ticket_count > 1:
+            if purchased_ticket.credits > 1:
                 # Decrement the count
-                purchased_ticket.ticket_count -= 1
+                purchased_ticket.credits -= 1
                 purchased_ticket.save()
             else:
                 # Delete the ticket entry if the count is 1
@@ -253,55 +313,65 @@ def gamepage01(request):
                 venue_summary.save()
 
             return JsonResponse({"success": True, "message": "Ticket updated or removed successfully"})
+
         except PurchasedTickets.DoesNotExist:
             return JsonResponse({"success": False, "message": "Ticket not found"})
         except Exception as e:
             return JsonResponse({"success": False, "message": str(e)})
 
-    return render(request,'gamepage01.html',{
+    return render(request, 'gamepage01.html', {
         'user': user,
         'user_profile': user_profile,
-        'name':name,
-        'tickets':tickets,
-        'purchasedTicket':purchasedTicket,
-        'totalcount':total_count
+        'name': name,
+        'tickets': tickets,
+        'purchasedTicket': purchasedTicket,
+        'totalcount': total_count,
+        'venuesName': venuesName,
+        'banners': banners,
+        'games': games
     })
 
 
 
+@csrf_exempt
 def supportTicket(request):
     if request.method == 'POST':
-        if request.user.is_authenticated:
-            user = request.user
-            email = user.email
+        if not request.user.is_authenticated:
+            return JsonResponse({'status': 'error', 'message': 'User not authenticated'}, status=403)
+
+        user = request.user
+        email = user.email
+
         try:
-            # Use request.POST for text fields and request.FILES for files
+            # ✅ Use request.POST instead of request.body
             title = request.POST.get('title')
             description = request.POST.get('description')
-            attachments = request.FILES.get('attachment')
+            venue = request.POST.get('venue')  # Get venue
+            attachment = request.FILES.get('attachment')  # Get file
 
-            if not title or not description or not attachments:
-                return JsonResponse({'error': "Ticket title, description, and attachment are required."}, status=400)
+            # ✅ Ensure all required fields are provided
+            if not title or not description or not venue:
+                return JsonResponse({'status': 'error', 'message': "Title, description, and venue are required."}, status=400)
 
+            # ✅ Save the support ticket
             submitTicket = SupportTicket(
-                user_profile= request.user.userprofile,
-                useremail = email,
+                user_profile=user.userprofile,
+                useremail=email,
                 title=title,
                 description=description,
-                attachment=attachments  
+                venue=venue,  # Save venue
+                attachment=attachment  # Save file
             )         
             submitTicket.save()
-            # send_mail(
-            #     "Gamnest Support Ticket",
-            #     f"Hey {user}, your request has been recieved by us: \n Title: {title} \n Description:{description} \n Attachments: {attachments} Your ticket status is Pending",
-            #     EMAIL_HOST_USER,
-            #     [email],
-            #     fail_silently=True
-            # )
+
             return JsonResponse({'status': 'success', 'message': 'Ticket submitted successfully.'})
-           
+
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=405)
+
+
         
 class TicketListView(generics.ListAPIView):
     queryset = SupportTicket.objects.all()
@@ -343,7 +413,11 @@ class TotalPurchaseTicketList(generics.ListAPIView):
 def notification(request):
     return render(request,'notification.html')
 def seeAllgames(request):
-    return render(request,'seeAllgames.html')
+
+    games_response = requests.get('https://dashboard.gamenest.se/api/Games')
+    games = games_response.json()
+
+    return render(request,'seeAllgames.html' ,{'games':games})
 def paymentMethod(request):
     return render(request,'paymentMethod.html')
 
@@ -354,6 +428,7 @@ def paymentconfirmation(request):
         ticket_id = ticket_data.get('id')
         ticket_name = ticket_data.get('name')
         ticket_price = ticket_data.get('price')
+        ticket_credits = ticket_data.get('credits')
     
         total_purchased_ticket, created = TotalPurchasedTickets.objects.get_or_create(
             user=request.user,
@@ -375,7 +450,8 @@ def paymentconfirmation(request):
             ticketid=ticket_id,
             defaults={
                 'ticketname': ticket_name,
-                'ticketprice':ticket_price
+                'ticketprice':ticket_price,
+                'credits':ticket_credits
             }
         )
 

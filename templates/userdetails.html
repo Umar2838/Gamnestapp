@@ -38,7 +38,7 @@
         <span id="avatarError" class="text-red-500 text-sm"></span>  -->
     
         <label class="block text-gray-700 text-sm font-medium">
-          Name
+          Username
           <input type="text" id="name" placeholder="e.g Gamenest"
             class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 caret-yellow-400">
         </label>
@@ -58,7 +58,7 @@
           <label
     class="flex justify-between relative items-center border rounded-2xl active:bg-[#4B61DD33] w-[150px] h-[60px] bg-red"
     id="maleGender">
-    <input type="radio" name="gender" value="Male" required />
+    <input type="radio" class="disbaledCheckboxes" name="gender" value="Male" required />
     <div class="flex justify-center absolute top-2 left-2 mx-auto w-10 h-10 rounded-full mb-[-180px]"
         style="background: #4B61DD;">
         <img src="{% static 'assets/Male.png' %}" class="absolute top-1.5" />
@@ -69,7 +69,7 @@
 <label
     class="flex justify-between relative items-center border rounded-2xl active:bg-[#FB29FF33] w-[150px] h-[60px] bg-red"
     id="femaleGender">
-    <input type="radio" name="gender" value="Female" required />
+    <input type="radio" class="disbaledCheckboxes" name="gender" value="Female" required />
     <div class="flex justify-center absolute top-2 left-2 mx-auto w-10 h-10 rounded-full mb-[-180px]"
         style="background: #FB29FF;">
         <img src="{% static 'assets/Female.png' %}" class="absolute top-1.5" />

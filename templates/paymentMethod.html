@@ -21,7 +21,7 @@
         </div>
 
         <div class="payment-div relative flex items-center gap-2">
-            <input type="radio" name="paymentMethod" id="creditCard" value="creditCard">
+            <input type="radio" class="disbaledCheckboxes" name="paymentMethod" id="creditCard" value="creditCard">
             <label for="creditCard"><img src="{% static 'assets/Icon left.png' %}" /> Credit Card</label>
             <div class="ml-auto">
                 <img id="paymentarrow" 
@@ -31,7 +31,7 @@
         </div>
 
         <div class="payment-div relative flex items-center gap-2">
-            <input type="radio" name="paymentMethod" id="wallet" value="wallet">
+            <input type="radio" class="disbaledCheckboxes" name="paymentMethod" id="wallet" value="wallet">
             <label for="wallet"><img src="{% static 'assets/wallet.png' %}" /> Wallet</label>
             <div class="ml-auto">
                 <img id="walletarrow" 
@@ -42,11 +42,11 @@
 
         <div id="otherpayment" class="hidden ml-10">
             <div class="flex items-center">
-                <input type="radio" name="walletOption" id="applePay" value="applePay">
+                <input type="radio" class="disbaledCheckboxes" name="walletOption" id="applePay" value="applePay">
                 <label for="applePay"><img src="{% static 'assets/Logo.png' %}" /> &nbsp; Apple Pay</label>
             </div>
             <div class="flex items-center mt-2">
-                <input type="radio" name="walletOption" id="googlePay" value="googlePay">
+                <input type="radio" class="disbaledCheckboxes" name="walletOption" id="googlePay" value="googlePay">
                 <label for="googlePay"><img src="{% static 'assets/Logo (1).png' %}" /> &nbsp; Google Pay</label>
             </div>
         </div>

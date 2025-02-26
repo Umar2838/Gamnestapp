@@ -6,7 +6,7 @@ import datetime
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=10, null=True, blank=True)
-    user_profile = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    user_profile = models.ImageField(upload_to='avatars/', null=True, blank=True , default="avatars/avatar.png")
     dob = models.DateField(null=True, blank=True)
     gender = models.CharField(max_length=10, choices=(('Male', 'Male'), ('Female', 'Female')), null=True, blank=True)
     forgetPasswordToken = models.CharField(max_length=100, null=True)
@@ -25,19 +25,22 @@ class SupportTicket(models.Model):
     useremail = models.EmailField(max_length=255 , null=True)
     title = models.CharField(max_length=200)
     description = models.TextField()
+    venue = models.CharField(max_length=255, null=True, blank=True)  # New field for venue
     attachment = models.FileField(upload_to='tickets/attachments/', null=True, blank=True)
-    priority = models.CharField(max_length=10, choices=[('high', 'High'), ('medium', 'Medium'), ('low', 'Low')],null=True, blank=True)
-    ticketstatus = models.CharField(max_length=20, choices=[('on-going', 'On Going'), ('resolved', 'Resolved')],null=True, blank=True)
-    reply = models.TextField(max_length=255,null=True, blank=True)
+    priority = models.CharField(max_length=10, choices=[('high', 'High'), ('medium', 'Medium'), ('low', 'Low')], null=True, blank=True)
+    ticketstatus = models.CharField(max_length=20, choices=[('on-going', 'On Going'), ('resolved', 'Resolved')], null=True, blank=True)
+    reply = models.TextField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title
 
 
+
 class PurchasedTickets(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     ticketid = models.IntegerField(null=True, blank=True)
+    credits = models.IntegerField(null=True , blank=True)
     ticketname = models.CharField(max_length=255,null=True,blank=True)
     ticketprice = models.IntegerField(null=True,blank=True) 
     ticket_count = models.IntegerField(default=1)  

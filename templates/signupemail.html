@@ -33,67 +33,74 @@
             <div class="space-y-4 text-left">
                 <!-- Username Input -->
                 <label class="block text-gray-700 text-sm font-medium">
-                    Username
-                    <input type="text" required name="username" placeholder="e.g @john123"
-                        class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:ring-yellow-300 caret-yellow-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value="{{ form.username.value|default_if_none:'' }}">
+                    Name
+                    <input type="text" id="username"  name="username" placeholder="e.g @john123"
+                        class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:ring-yellow-300 caret-yellow-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </label>
-                <!-- Error for Name -->
-                {% if form.username.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</p>
-                {% endif %}
-
+        
                 <!-- Email Input -->
                 <label class="block text-gray-700 text-sm font-medium">
                     Email
-                    <input required type="email" name="email" placeholder="e.g example@email.com"
-                        class="w-full mt-1 px-4 py-2 border border-gray-300 focus:ring-yellow-300 caret-yellow-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        value="{{ form.email.value|default_if_none:'' }}">
+                    <input  type="email" id="email" name="email" placeholder="e.g example@email.com"
+                        class="w-full mt-1 px-4 py-2 border border-gray-300 focus:ring-yellow-300 caret-yellow-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </label>
-                <!-- Error for Email -->
-                {% if form.email.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.email.errors.0 }}</p>
-                {% endif %}
-
+        
                 <!-- Password Input -->
                 <label class="block text-gray-700 text-sm font-medium relative">
                     Create Password
                     <div class="relative">
-                        <input id="password" required name="password" type="password" placeholder="••••••••"
+                        <input id="password"  name="password" type="password" placeholder="••••••••"
                             class="w-full mt-1 px-4 py-2 border focus:ring-yellow-300 caret-yellow-300 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer" onclick="togglePasswordVisibility()">
                             <i id="toggleIcon" class="fas fa-eye-slash text-gray-500"></i>
                         </span>
                     </div>
                 </label>
-                <!-- Error for Password -->
-                {% if form.password.errors %}
-                <p class="text-red-500 text-sm mt-1">{{ form.password.errors.0 }}</p>
-                {% endif %}
-
-                <p class="text-gray-400 ">Password must be at least 8 characters long!</p>
-                
-                <div id="signuperror" class="text-red-500"></div>
-
             </div>
-
+        
             <!-- Submit Button with Loader -->
             <div class="mt-4">
                 <button type="submit" id="signupButton"
-                    class="btn items-center hover:bg-gray-400 w-full py-2 mb-3 mt-4 rounded-full border border-gray-300 bg-gray-300 font-bold text-gray-500 ">
+                    class="btn items-center  w-full py-2 mb-3 mt-4 rounded-full border border-[#F9C034] bg-[#F9C034] font-bold text-white ">
                     <span id="signupbuttonText">Register</span>
                     <center>
-                        <div id="signuploader" class="loader" style="display: none;" >
+                        <div id="signuploader" class="loader" style="display: none;">
                             <div class="circle"></div>
                             <div class="circle"></div>
                             <div class="circle"></div>
                             <div class="circle"></div>
                         </div>
-                    </center>                
+                    </center>
                 </button>
             </div>
         </form>
-
+        
+        <!-- Success Modal -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body p-3">
+                        <center><img src="{% static 'assets/checked.png' %}" alt="Success Icon" /></center>
+                        <h1 id="success" class="success-text"
+                            style="color:#32ba7c;text-align:center;padding-top:10px;font-size:24px;"></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Modal -->
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body p-3">
+                        <center><img src="{% static 'assets/mark.png' %}" alt="Error Icon" /></center>
+                        <h1 id="error" class="error-text"
+                            style="text-align:center;padding-top:10px;font-size:24px;"></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <p class="">Already have an account? <a class="link-tag" href="loginshow">Login</a></p>
         <p class="pt-2 text-gray-400">━━━━━━━ other sign up ━━━━━━━</p>
         <div class="flex gap-4 justify-center mt-2">
@@ -106,6 +113,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/da726f302a.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/index.js' %}" ></script>
 
     <!-- Password Toggle Script -->
     <script>

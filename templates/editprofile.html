@@ -41,7 +41,7 @@
 
                 <div class="w-6 h-6 bottom-0 right-0 bg-yellow-400 rounded-full absolute cursor-pointer"
                     onclick="document.getElementById('fileInput').click()">
-                    <img src="{% static 'assets/camera.png' %}" style="width:16px;" class="absolute top-1 left-1" />
+                    <img  src="{% static 'assets/camera.png' %}" style="width:16px;" class="absolute top-1 left-1" />
                 </div>
                 <!-- Hidden File Input -->
                 <input type="file" id="fileInput" name="fileInput" accept="image/*" style="display: none;"
@@ -50,7 +50,7 @@
 
             <div class="space-y-4 text-left">
                 <label class="block text-gray-700 relative text-sm font-medium">
-                    Name
+                    Username
                     <div class="relative">
                         <input type="text" id="fname" name="fname" value="{{ user_profile.name }}"
                             placeholder="Enter your full name" required
@@ -61,16 +61,6 @@
                     </div>
                 </label>
 
-                <label class="block text-gray-700 text-sm font-medium">
-                    Username
-                    <div class="relative">
-                        <input type="text" name="username" id="username" placeholder="Enter your username"
-                            value="{{ user_profile.user.username }}"
-                            class="w-full mt-1 px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 caret-yellow-400">
-                        <img class="absolute top-3 right-2 object-fit-cover"
-                            src="{% static 'assets/edit-2black.png' %}" />
-                    </div>
-                </label>
 
                 <label class="block text-gray-700 text-sm font-medium relative">
                     Date of birth
@@ -200,9 +190,9 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Initialize Flatpickr on the date input field
             flatpickr("#date", {
-                dateFormat: "Y-m-d", // Matches the format in your Django template {{ user_profile.dob|date:'Y-m-d' }}
-                altInput: true, // Shows a more readable date format in the input field
-                altFormat: "F j, Y", // Alternative display format (e.g., "January 1, 2023")
+                dateFormat: "Y-m-d", 
+                altInput: true, 
+                altFormat: "F j, Y", 
             });
         });
         setTimeout(() => {
@@ -211,6 +201,8 @@
                 messageContainer.style.display = 'none';
             }
         }, 5000);
+      
+        
     </script>
 
 </body>
