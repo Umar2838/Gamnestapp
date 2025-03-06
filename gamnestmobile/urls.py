@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/',include('allauth.urls')),
+    path('social-auth/',include('social_django.urls' , namespace="social")),
     path('api/purchased-tickets/', views.PurchasedTicketsList.as_view(), name='purchased-tickets-list'),
     path('', views.index, name="index"),
     path('signup', views.signup, name="signup"),

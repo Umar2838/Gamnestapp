@@ -37,28 +37,38 @@ class SupportTicket(models.Model):
 
 
 
+from django.db import models
+import json
+from django.contrib.auth.models import User
+import datetime
+
+# Define the PurchasedTickets and TotalPurchasedTickets models
+
 class PurchasedTickets(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     ticketid = models.IntegerField(null=True, blank=True)
-    credits = models.IntegerField(null=True , blank=True)
-    ticketname = models.CharField(max_length=255,null=True,blank=True)
-    ticketprice = models.IntegerField(null=True,blank=True) 
-    ticket_count = models.IntegerField(default=1)  
-    purchase_date = models.DateField(default=datetime.date.today) 
+    credits = models.IntegerField(null=True, blank=True)
+    ticketname = models.CharField(max_length=255, null=True, blank=True)
+    ticketprice = models.IntegerField(null=True, blank=True)
+    ticket_count = models.IntegerField(default=1)
+    purchase_date = models.DateField(default=datetime.date.today)
+    venue = models.JSONField(null=True, blank=True)  # Store venue as JSON data
 
     def __str__(self):
         return self.ticketname
 
 class TotalPurchasedTickets(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     ticketid = models.IntegerField(null=True, blank=True)
-    ticketname = models.CharField(max_length=255,null=True,blank=True)
-    ticketprice = models.IntegerField(null=True,blank=True) 
-    ticket_count = models.IntegerField(default=1)  
-    purchase_date = models.DateField(default=datetime.date.today) 
+    ticketname = models.CharField(max_length=255, null=True, blank=True)
+    ticketprice = models.IntegerField(null=True, blank=True)
+    ticket_count = models.IntegerField(default=1)
+    purchase_date = models.DateField(default=datetime.date.today)
+    venue = models.JSONField(null=True, blank=True)  # Store venue as JSON data
 
     def __str__(self):
         return self.ticketname
+
     
 
 class VenueTicketSummary(models.Model):

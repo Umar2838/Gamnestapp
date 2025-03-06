@@ -26,7 +26,7 @@
       <img class="logo" src="{% static '/assets/brand-logo.png' %}" alt="Brand Logo" />
     </div>
     <p class="text-gray-700 font-bold mb-6">Where the thrill of classic arcade games meets modern excitement.</p>
-    <a href="{% provider_login_url 'facebook' %}" >
+    <a href="{% url 'social:begin' 'facebook' %}" >
     <button type="button" class="btn bg-transparent flex gap-10 items-center w-full py-2 mb-3 rounded-full focus:border-2"><img
         src="{% static 'assets/facebook.png'%}" /> Signup with Facebook</button>
       </a>

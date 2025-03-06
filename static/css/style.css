@@ -607,6 +607,22 @@ box-shadow: 0px 4px 8px -2px #1018281A;
     margin-bottom: 20px; /* Further adjust margin for mobile */
   }
 }
+.venue-option {
+  padding: 10px;
+  margin: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.venue-option label {
+  margin-left: 10px;
+}
+
+.selected {
+  background-color: #007bff;
+  color: white;
+}
+
 /* Class to blur the background */
 .blur-background {
   transition: filter 0.5s ease;
@@ -633,6 +649,12 @@ padding:14px 15px 14px 15px;
   display: flex;
   gap: 10px;
   align-items:center;
+}
+.ownedticket-availabe{
+  box-shadow: 0px 4px 8px -2px #1018281A;
+  width:100%;
+  padding:12px;
+  margin-top: 10px;
 }
 .ticket-buy{
   background: #F9C034;

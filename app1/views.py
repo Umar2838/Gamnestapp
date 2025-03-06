@@ -75,7 +75,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages  # for displaying error messages
 
-@csrf_exempt
+@csrf_exempt  # Consider removing this if CSRF is properly handled
 def loginemail(request):
     if request.method == 'POST':
         try:
@@ -90,19 +90,20 @@ def loginemail(request):
             
             if user is not None:
                 login(request, user)
-                if not user.userprofile:
-                    UserProfile.objects.create(user=user, first_login=True)
 
-                # Fetch user profile to check first login
+                # Check if the user profile exists
                 try:
                     user_profile = UserProfile.objects.get(user=user)
-                    if user_profile.first_login:
-                        user_profile.first_login = False
-                        user_profile.save()
-                        return JsonResponse({'success': True, 'message': 'Login successful.', 'redirect_url': '/userdetails'})
-                    else:
-                        return JsonResponse({'success': True, 'message': 'Login successful.', 'redirect_url': '/gamepage01'})
                 except UserProfile.DoesNotExist:
+                    # Create a new UserProfile if it doesn't exist
+                    user_profile = UserProfile.objects.create(user=user, first_login=True)
+
+                # Check if it's the first login
+                if user_profile.first_login:
+                    user_profile.first_login = False
+                    user_profile.save()
+                    return JsonResponse({'success': True, 'message': 'Login successful.', 'redirect_url': '/userdetails'})
+                else:
                     return JsonResponse({'success': True, 'message': 'Login successful.', 'redirect_url': '/gamepage01'})
             else:
                 return JsonResponse({'success': False, 'message': 'Invalid email or password.'}, status=401)
@@ -200,6 +201,7 @@ from django.contrib.auth.decorators import login_required
 from .models import UserProfile
 import json
 
+@login_required
 def userdetails(request):
     if request.method == 'POST':
         # Ensure the user is authenticated
@@ -233,6 +235,7 @@ from django.shortcuts import render
 from django.db.models import Sum
 from .models import UserProfile, PurchasedTickets, VenueTicketSummary
 
+@login_required
 def gamepage01(request):
     user = request.user
     venuesName = get_venue_name()  
@@ -244,6 +247,7 @@ def gamepage01(request):
         # Fetch tickets, banners, and games
         response = requests.get('https://dashboard.gamenest.se/api/getTickets/')
         tickets = response.json()
+      
         
         response = requests.get('https://dashboard.gamenest.se/api/carousel-banners/')
         banners_response = response.json()
@@ -269,53 +273,60 @@ def gamepage01(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            ticketpurchaseid = data.get("ticketpurchaseid")
+            ticketid = data.get("ticketid")
+            purchasedTicketId = data.get("purchasedTicketId")
             userid = data.get("userid")
-            venue_name = data.get("venueName")
-            ticket_price = float(data.get("ticketprice"))
+            ticket_price = int(data.get("ticketprice"))
+            venue_id = data.get("venue_id") 
+            venueName = data.get("venueName")
 
-            # Get venue ID from venue name
-            venue_id = venue_mapping.get(venue_name)
-            if not venue_id:
-                return JsonResponse({"success": False, "message": "Invalid venue name"})
+            # Fetch ticket details from API
+            api_url = "https://dashboard.gamenest.se/api/getTickets/"
+            response = requests.get(api_url)
+            if response.status_code != 200:
+                return JsonResponse({"success": False, "message": "Failed to fetch ticket details."})
 
-            # Find ticket status from API response
-            ticket_status = None
-            for ticket in tickets:
-                if ticket["id"] == int(ticketpurchaseid):  # Match ticket ID
-                    ticket_status = ticket["status"].get(str(venue_id))  # Get status for venue ID
-                    break
+            tickets = response.json()
+            
+            print(ticket_price)
+            # Find the ticket in API response
+            ticket = next((t for t in tickets if t["id"] == int(ticketid)), None)
+            print(ticket)
 
-            if ticket_status == "inactive":
-                return JsonResponse({"success": False, "message": "Ticket is inactive for this venue"})
+            if not ticket:
+                return JsonResponse({"success": False, "message": "Ticket not found in system."})
 
-            # Fetch the specific purchased ticket
-            purchased_ticket = PurchasedTickets.objects.get(id=ticketpurchaseid, user_id=userid)
+            # Verify the venue status
+            ticket_status = ticket["status"].get(str(venue_id))
+            if ticket_status != "active":
+                return JsonResponse({"success": False, "message": "Ticket is inactive for this venue."})
 
-            # Check the ticket count
+            # Fetch the purchased ticket
+            purchased_ticket = PurchasedTickets.objects.get(id=purchasedTicketId, user_id=userid)
+
+            print(purchasedTicket)
+
+            # Check ticket count and update
             if purchased_ticket.credits > 1:
-                # Decrement the count
                 purchased_ticket.credits -= 1
                 purchased_ticket.save()
             else:
-                # Delete the ticket entry if the count is 1
                 purchased_ticket.delete()
 
-            # Add or update the VenueTicketSummary entry
+            # Update VenueTicketSummary
             venue_summary, created = VenueTicketSummary.objects.get_or_create(
-                venue_name=venue_name,
+                venue_name=venueName,  # Store venue ID instead of name
                 defaults={"total_price": ticket_price, "date_time": datetime.now()},
             )
             if not created:
-                # If the entry already exists, add the ticket price to total_price
                 venue_summary.total_price += ticket_price
                 venue_summary.date_time = datetime.now()
                 venue_summary.save()
 
-            return JsonResponse({"success": True, "message": "Ticket updated or removed successfully"})
+            return JsonResponse({"success": True, "message": "Ticket updated successfully."})
 
         except PurchasedTickets.DoesNotExist:
-            return JsonResponse({"success": False, "message": "Ticket not found"})
+            return JsonResponse({"success": False, "message": "Ticket not found."})
         except Exception as e:
             return JsonResponse({"success": False, "message": str(e)})
 
@@ -333,7 +344,7 @@ def gamepage01(request):
 
 
 
-@csrf_exempt
+@login_required
 def supportTicket(request):
     if request.method == 'POST':
         if not request.user.is_authenticated:
@@ -409,18 +420,23 @@ class TotalPurchaseTicketList(generics.ListAPIView):
     queryset = TotalPurchasedTickets.objects.all()    
     serializer_class = TotalPurchasedTicketsSerializer
 
-
+@login_required
 def notification(request):
     return render(request,'notification.html')
+
+@login_required
 def seeAllgames(request):
 
     games_response = requests.get('https://dashboard.gamenest.se/api/Games')
     games = games_response.json()
 
     return render(request,'seeAllgames.html' ,{'games':games})
+
+@login_required
 def paymentMethod(request):
     return render(request,'paymentMethod.html')
 
+@login_required
 def paymentconfirmation(request):
     if request.method == 'POST':
         # Parse the data from the frontend (ticket info sent via fetch request)
@@ -429,13 +445,16 @@ def paymentconfirmation(request):
         ticket_name = ticket_data.get('name')
         ticket_price = ticket_data.get('price')
         ticket_credits = ticket_data.get('credits')
-    
+        ticket_venue = ticket_data.get('venue')  # This is the venue data
+
+        # Handle the TotalPurchasedTickets model
         total_purchased_ticket, created = TotalPurchasedTickets.objects.get_or_create(
             user=request.user,
             ticketid=ticket_id,
             defaults={
                 'ticketname': ticket_name,
-                'ticketprice':ticket_price
+                'ticketprice': ticket_price,
+                'venue': ticket_venue 
             }
         )
 
@@ -443,15 +462,15 @@ def paymentconfirmation(request):
             total_purchased_ticket.ticket_count += 1
             total_purchased_ticket.save()
 
-
-        # Check if the user already has this ticket in their purchases
+        # Handle the PurchasedTickets model
         purchased_ticket, created = PurchasedTickets.objects.get_or_create(
             user=request.user,
             ticketid=ticket_id,
             defaults={
                 'ticketname': ticket_name,
-                'ticketprice':ticket_price,
-                'credits':ticket_credits
+                'ticketprice': ticket_price,
+                'credits': ticket_credits,
+                'venue': ticket_venue
             }
         )
 
@@ -463,6 +482,7 @@ def paymentconfirmation(request):
 
     return render(request, 'paymentconfirmation.html')
 
+@login_required
 def successfulpayment(request):
     return render(request,'successfulpayment.html') 
 from django.contrib import messages
@@ -553,9 +573,11 @@ def editProfile(request):
 
 
 
-
+@login_required
 def language(request):
     return render(request,'language.html')
+
+@login_required
 def location(request):
     venues = get_venue_name()  # Get venue names
     print(venues)
@@ -583,10 +605,13 @@ def location(request):
             print(e)
             return JsonResponse({'status': 'error', 'message': 'An error occurred'})
 
-    return render(request, 'location.html', {'venues': venues})  # Return correct context variable
+    return render(request, 'location.html', {'venues': venues})
+
+@login_required
 def setting(request):
     return render(request,'setting.html')
 
+@login_required
 def rulesAndPolicy(request):
 
     return render(request,'rulesAndPolicy.html')

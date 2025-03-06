@@ -26,4 +26,4 @@ class VenueSummarySerializer(serializers.ModelSerializer):
 class TotalPurchasedTicketsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PurchasedTickets
-        fields = ['user', 'ticketid', 'ticketname', 'ticketprice', 'ticket_count','purchase_date']
+        fields = ['user', 'ticketid', 'ticketname', 'ticketprice', 'ticket_count','purchase_date' , 'venue']

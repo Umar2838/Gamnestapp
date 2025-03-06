@@ -30,25 +30,25 @@ function getCookie(name) {
 
     loginForm && loginForm.addEventListener("submit", (e) => {
         e.preventDefault();
-
+    
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
         const csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
-
+    
         if (!email || !password) {
             document.getElementById("error").textContent = "Both email and password are required.";
             const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));
             errorModal.show();
             return;
         }
-
+    
         const data = { email: email, password: password };
-
+    
         // Disable button & show loader
         document.getElementById("loginButton").disabled = true;
         document.getElementById("buttonText").style.display = "none";
         document.getElementById("loader").style.display = "inline-block";
-
+    
         fetch("loginemail", {
             method: "POST",
             headers: {
@@ -67,7 +67,7 @@ function getCookie(name) {
                 setTimeout(() => {
                     successModal.hide();
                     window.location.href = data.redirect_url;
-                }, 1000);
+                },  1000);
             } else {
                 document.getElementById("error").textContent = data.message;
                 const errorModal = new bootstrap.Modal(document.getElementById("errorModal"));

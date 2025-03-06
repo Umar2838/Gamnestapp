@@ -393,7 +393,7 @@
         <div class="ticketavailability" id="ticketavailability" style="display: none;">
             <p class="text-center pt-1">Select the type of ticket you want to use</p>
             {% for ticket in purchasedTicket %}
-            <button class="ticket-availabe w-full overflow-y-scroll"  data-ticketid="{{ ticket.ticketid }}" data-ticket-status={{"ticket.status"}} data-purchasedticketid = "{{ticket.id}}" data-ticketprice="{{ticket.ticketprice}}" data-tickettitle="{{ticket.ticketname}}" data-ticketcount = "{{ticket.ticket_count}}" data-userid="{{ticket.user_id}}" onclick="handleTicketClick(event)">
+            <button class="ticket-availabe w-full overflow-y-scroll"  data-ticketid="{{ ticket.ticketid }}" data-ticketprice="{{ticket.ticketprice}}" data-ticket-status={{"ticket.status"}} data-purchasedticketid = "{{ticket.id}}" data-ticketVenue='{{ ticket.venue}}'  data-userid="{{ticket.user_id}}" onclick="handleTicketClick(event)">
                 <div><img src="{% static 'assets/star-2 1.png' %}" /> </div>
                 <div>
                     <h1 class="font-bold">{{ ticket.ticketname }} <span class="font-light">ticket</span></h1>
@@ -424,6 +424,29 @@
         <div class="ticketnonavailability mb-[80px]" id="venuenonavailability" style="display: none;">
             <p class="text-center text-red-600 font-bold pb-12">No Venue available</p>
         
+        </div>
+
+            <div class="modal fade" id="statuserrorModal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body p-3">
+                    <center><img src="{% static 'assets/mark.png' %}" alt="Error Icon" /></center>
+                    <h1 id="statuserror" class="error-text"
+                        style="text-align:center;padding-top:10px;font-size:24px;"></h1>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="modal fade" id="statussuccessModal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body p-3">
+                        <center><img src="{% static 'assets/checked.png' %}" alt="Success Icon" /></center>
+                        <h1 id="statussuccess" class="success-text"
+                            style="color:#32ba7c;text-align:center;padding-top:10px;font-size:24px;"></h1>
+                    </div>
+                </div>
+            </div>
         </div>
     
     </div>
@@ -474,11 +497,40 @@
             <div>
                 <h1 class="font-bold">{{tickets.name}} <span class="font-light">ticket</span></h1>
             </div>
-            <a class="ticket-buy font-bold" data-id="{{tickets.id}}" data-name="{{tickets.name}}" data-price="{{tickets.price}}" data-credits="{{tickets.credits}}"><button>SEK{{tickets.price}}</button></a>
+            <a class="ticket-buy font-bold" data-id="{{tickets.id}}" data-name="{{tickets.name}}" data-price="{{tickets.price}}" data-credits="{{tickets.credits}}" data-status="{{tickets.status}}" ><button>SEK{{tickets.price}}</button></a>
         </div>
         {% endfor %}
         
     </div>
+
+<!-- Modal -->
+<!-- Modal for Venue Selection -->
+<!-- Modal for Venue Selection -->
+<div class="modal fade" id="venueTicket" tabindex="-1" aria-labelledby="venueModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="venueModalLabel">Select Venue</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" ></button>
+        </div>
+        <h3 id="message" class="px-4 text-red-400" ></h3>
+        <div class="modal-body p-3" id="venue-selection-container">
+          <!-- Venues will be dynamically added here -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn bg-red-600 text-black" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-warning text-black" id="confirm-venue-selection">Select Venue</button>
+        </div>
+      </div>
+    </div>
+
+    
+
+  </div>
+  
+  
+
+
     </div>
 
     <!-- Owned Tickets -->
@@ -504,15 +556,28 @@
             {% endif %}
 
         </div>
-{% for purchasedTicket in purchasedTicket %}
-        <div class="ticket-availabe">
-            <div><img src="{% static 'assets/star-2 1.png'%}" /> </div>
+        {% for purchasedTicket in purchasedTicket %}
+        <div class="ownedticket-availabe">
+            <div class="flex justify-content-between align-items-center" >
+            <div><img src="{% static 'assets/star-2 1.png' %}" /> </div>
             <div>
-                <h1 class="font-bold">{{purchasedTicket.ticketname}} <span class="font-light">ticket</span></h1>
+                <h1 class="font-bold">{{ purchasedTicket.ticketname }} <span class="font-light">ticket</span></h1>
             </div>
-            <div  class="ticket-count font-bold">{{purchasedTicket.credits}}</div>
+            <div class="ticket-count font-bold">{{ purchasedTicket.credits }}</div>
         </div>
-        {% endfor %}
+        {% if purchasedTicket.venue %}
+        <div class="ticket-venue flex gap-2">
+            {% for venue in purchasedTicket.venue %}
+                <p class="text-[#FCAA17]" >{{ venue.name }}</p> 
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="ticket-venue text-[#FCAA17]">Ticket is not available</div>
+    {% endif %}
+        </div>
+           
+    {% endfor %}
+    
 
     </div>
 
@@ -602,7 +667,7 @@
                             <div>
                                 <h1 class="font-bold">{{purchasedTicket.ticketname}} <span class="font-light">ticket</span></h1>
                             </div>
-                            <button type="button" class="ticket-buy font-bold">{{purchasedTicket.ticket_count}}</button>
+                            <button type="button" class="ticket-buy font-bold">{{purchasedTicket.credits}}</button>
                         </div>
                         {% endfor %}
                         {% else %}

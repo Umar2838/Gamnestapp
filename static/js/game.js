@@ -145,7 +145,7 @@ async function fetchVenueNames() {
       const venueData = await response.json();
       
       // Extract names from the venue data
-      const venueNames = venueData.map(venue => venue.name); // Assuming venueData is an array of objects
+      const venueNames = venueData.map(venue => venue.name ); // Assuming venueData is an array of objects
       return venueNames; // Return an array of venue names
   } catch (error) {
       console.error('Error fetching venue names:', error);
@@ -164,8 +164,7 @@ iconLinks.forEach((link) => {
           const qrCodeSuccessCallback = async (decodedText, decodedResult) => {
               console.log(decodedResult);
               const venueNames = await fetchVenueNames(); // Fetch venue names from the API
-              venueName = decodedText;
-
+              localStorage.setItem("venueName",decodedText)
               // Check if the decoded text matches any venue name from the API
               if (venueNames.includes(decodedText)) {
                   if (ticketAvailability && ticketAvailability.children.length > 0) {
@@ -621,65 +620,137 @@ var swiper = new Swiper(".gamesmySwiper", {
   },
 });
 
-var venueName ;
 
-  const appBody = document.getElementById("qr"); 
-  const ticketAvailability = document.getElementById("ticketavailability");
-  const ticketNonAvailability = document.getElementById("ticketnonavailability");
-  const venuenonavailability = document.getElementById("venuenonavailability")
-  
-  
-  // Hide availability and remove blur when clicking on appBody
- 
-  const qrloader = document.getElementById("qrloader");
-  const qrbody = document.getElementById("qr");
-  
-  function handleTicketClick(event) {
-      // Get the clicked button element and data
-      const button = event.currentTarget;
-      const ticketName = button.getAttribute("data-tickettitle");
-      const ticketCount = button.getAttribute("data-ticketcount");
-      const ticketprice = button.getAttribute("data-ticketprice");
-      const ticketpurchaseid = button.getAttribute("data-purchasedticketid");
-      const ticketid = button.getAttribute("data-ticketid");
-      const userid = button.getAttribute("data-userid");
-  
-      // Show the loader and hide the QR body
-      qrbody.style.display = "none";
-      qrloader.style.display = "flex"; // Show the loader
-  
-      // Fetch request to update ticket
-      fetch("gamepage01", {
+const appBody = document.getElementById("qr"); 
+const ticketAvailability = document.getElementById("ticketavailability");
+const ticketNonAvailability = document.getElementById("ticketnonavailability");
+const venuenonavailability = document.getElementById("venuenonavailability")
+
+
+// Hide availability and remove blur when clicking on appBody
+
+const qrloader = document.getElementById("qrloader");
+const qrbody = document.getElementById("qr");
+
+async function handleTicketClick(event) {
+  const button = event.currentTarget;
+  const ticketId = button.getAttribute("data-ticketid");
+  const purchasedTicketId = button.getAttribute("data-purchasedticketid");
+  const userId = button.getAttribute("data-userid");
+  const ticketprice = button.getAttribute('data-ticketprice');
+  const ticketData = JSON.parse(localStorage.getItem("finalticketData"));
+  const venueData = ticketData.venue
+
+  qrbody.style.display = "none";
+  qrloader.style.display = "flex"
+
+  console.log(parseInt(ticketprice))
+
+  try {
+      // Fetch ticket details from API
+      const response = await fetch("https://dashboard.gamenest.se/api/getTickets/");
+      const tickets = await response.json();
+
+      // Find the clicked ticket in API response
+      const ticket = tickets.find(t => t.id === parseInt(ticketId));
+
+      if (!ticket) {
+        qrloader.style.display = "none";
+        qrbody.style.display = "block";
+        document.getElementById("statuserror").textContent ="Ticket is not available.";
+        const statuserrorModal = new bootstrap.Modal(document.getElementById("statuserrorModal"));
+        statuserrorModal.show();
+        setTimeout(()=>{
+          statuserrorModal.hide()
+        },2000)
+        return;
+      }
+
+      // Check if any venue linked to the ticket is active
+      let venueActive = false;
+      let venueId = null;
+      console.log(venueData)
+      for (let venue of venueData) {
+        console.log(venue)
+          if (ticket.status[venue.id] === "active") {
+              venueActive = true;
+              venueId = venue.id; 
+              venueName = venue.name
+              break;
+          }
+      }
+
+      if (!venueActive) {
+        qrloader.style.display = "none";
+          qrbody.style.display = "block";
+          document.getElementById("statuserror").textContent ="This ticket is inactive for this venue.";
+          const statuserrorModal = new bootstrap.Modal(document.getElementById("statuserrorModal"));
+          statuserrorModal.show();
+          setTimeout(()=>{
+            statuserrorModal.hide()
+          },2000)
+          return;
+      }
+
+      // Proceed with the ticket update request
+      const updateResponse = await fetch("gamepage01", {
           method: "POST",
           headers: {
               "Content-Type": "application/json",
               "X-CSRFToken": csrftoken,
           },
           body: JSON.stringify({
-              ticketpurchaseid: ticketpurchaseid,
-              userid: userid,
-              venueName: venueName,
+              ticketid: ticketId,
+              userid: userId,
               ticketprice: ticketprice,
+              purchasedTicketId : purchasedTicketId,
+              venue_id: venueId ,
+              venueName : venueName
           }),
-      })
-      .then(response => response.json())
-      .then(data => {
-          if (data.success) {
-              console.log("Ticket updated or removed successfully");
-              qrbody.style.display = "none";
-              qrloader.style.display = "flex";
-              window.location.href = "gamepage01";
-          } else {
-              console.error("Error:", data.message);
-              qrbody.style.display = "none";
-              qrloader.style.display = "flex";
-          }
-      })
-      .catch(error => console.error("Error:", error))
-      qrbody.style.display = "none";
-              qrloader.style.display = "flex";
-      
+      });
+
+      const data = await updateResponse.json();
+
+      if (data.success) {
+        qrloader.style.display = "none";
+        document.getElementById("statussuccess").textContent = "Ticket is consumed successfully!";
+        const statussuccessModal = new bootstrap.Modal(document.getElementById("statussuccessModal"));
+        statussuccessModal.show();
+        setTimeout(()=>{
+          statussuccessModal.hide()
+        },2000)
+        qrbody.style.display = "block";
+          window.location.href = "gamepage01";
+          return
+
+      } else {
+        qrloader.style.display = "none";
+        qrbody.style.display = "block";
+          document.getElementById("statuserror").textContent = "Error updating ticket.";
+          const statuserrorModal = new bootstrap.Modal(document.getElementById("statuserrorModal"));
+          statuserrorModal.show();
+          setTimeout(()=>{
+            statuserrorModal.hide()
+          },2000)
+          return;
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      qrloader.style.display = "none";
+      qrbody.style.display = "block";
+       document.getElementById("statuserror").textContent ="Failed to process ticket.";
+          const statuserrorModal = new bootstrap.Modal(document.getElementById("statuserrorModal"));
+          statuserrorModal.show();
+          setTimeout(()=>{
+            statuserrorModal.hide()
+          },2000)
+          return;
   }
+
+  // Hide loader
+  qrbody.style.display = "block";
+  qrloader.style.display = "none";
+}
 
 
 
@@ -690,49 +761,164 @@ var venueName ;
 
 
   // Select all elements with the class 'ticket-buy'
-const ticketButtons = document.querySelectorAll('.ticket-buy');
+  const ticketButtons = document.querySelectorAll('.ticket-buy');
 
-ticketButtons.forEach(button => {
-    button.addEventListener('click', function(event) {
-        // Prevent the default anchor click behavior
-        event.preventDefault();
+  async function fetchVenueData() {
+    try {
+      const response = await fetch('https://dashboard.gamenest.se/api/getVenuename/');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const venueData = await response.json();
+  
+      // Extract both id and name from the venue data
+      const venueNames = venueData.map(venue => ({
+        id: venue.id,
+        name: venue.name
+      }));
+  
+      return venueNames; // Return an array of objects with id and name
+    } catch (error) {
+      console.error('Error fetching venue names:', error);
+      return [];
+    }
+  }
+  
+  ticketButtons.forEach(button => {
+    button.addEventListener('click', async function(event) {
+      // Prevent the default anchor click behavior
+      event.preventDefault();
+  
+      const ticketId = this.getAttribute('data-id');
+      const ticketName = this.getAttribute('data-name');
+      const ticketPrice = parseFloat(this.getAttribute('data-price'));
+      const ticketCredits = this.getAttribute('data-credits');
+      const ticketStatus = this.getAttribute("data-status");
+  
+      // Create a ticket object
+      const ticketData = {
+        id: ticketId,
+        name: ticketName,
+        price: ticketPrice,
+        credits: ticketCredits,
+        status: ticketStatus
+      };
+  
+      // Save to local storage
+      localStorage.setItem('selectedTicket', JSON.stringify(ticketData));
+  
+      const ticketData1 = JSON.parse(localStorage.getItem('selectedTicket'));
+      console.log(ticketData1);
+  
+      // Parse the status and filter for active status
+      const statusObj = JSON.parse(ticketData1.status.replace(/'/g, '"'));
+  
+      // Filter the status to get only the active keys
+      const activeStatuses = Object.entries(statusObj)
+        .filter(([key, value]) => value === 'active')
+        .map(([key, value]) => key);
+  
+      console.log('Active Statuses:', activeStatuses);
+  
+      // Fetch venue data
+      const venueData = await fetchVenueData();
+      console.log(venueData);
+  
+      // Filter the venues that match the active statuses
+      const activeVenues = venueData.filter(venue => activeStatuses.includes(venue.id.toString()));
+  
+      // Show the venue names in the modal
+      const venueSelectionContainer = document.getElementById('venue-selection-container');
+      venueSelectionContainer.innerHTML = ''; // Clear any previous content
+  
+      if (activeVenues.length === 0) {
+        // Show message if no venues are available
+        const noVenuesMessage = document.createElement('p');
+        noVenuesMessage.textContent = "No venues available for this ticket.";
+        venueSelectionContainer.appendChild(noVenuesMessage);
+      } else {
+        // Show venues as checkboxes
+        activeVenues.forEach(venue => {
+          const venueElement = document.createElement('div');
+          venueElement.classList.add('venue-option');
+          
+          // Create a checkbox for the venue
+          const venueCheckbox = document.createElement('input');
+          venueCheckbox.type = 'checkbox';
+          venueCheckbox.id = `venue-${venue.id}`;
+          venueCheckbox.value = venue.id;
+          
+          const venueLabel = document.createElement('label');
+          venueLabel.setAttribute('for', `venue-${venue.id}`);
+          venueLabel.textContent = venue.name;
+  
+          venueElement.appendChild(venueCheckbox);
+          venueElement.appendChild(venueLabel);
+          venueSelectionContainer.appendChild(venueElement);
+          
+               
+        });
+      }
+  
+      // Show the modal
+      const venueModal = new bootstrap.Modal(document.getElementById('venueTicket'));
+      message.textContent = ""
+      venueModal.show();
 
-        const ticketId = this.getAttribute('data-id');
-        const ticketName = this.getAttribute('data-name');
-        const ticketPrice = parseFloat(this.getAttribute('data-price'));
-        const ticketCredits = this.getAttribute('data-credits');
-
-        // Create a ticket object
-        const ticketData = {
+  
+      // Add functionality to confirm the venue selection
+      const confirmButton = document.getElementById('confirm-venue-selection');
+      confirmButton.addEventListener('click', function() {
+        const selectedVenueCheckboxes = document.querySelectorAll('.venue-option input[type="checkbox"]:checked');
+        const selectedVenueIds = [];
+  
+        selectedVenueCheckboxes.forEach(checkbox => {
+          selectedVenueIds.push(checkbox.value);
+        });
+  
+        if (selectedVenueIds.length > 0) {
+          const selectedVenues = activeVenues.filter(venue => selectedVenueIds.includes(venue.id.toString()));
+          console.log('Selected Venues:', selectedVenues);
+          message.textContent = `You selected the following venues: ${selectedVenues.map(venue => venue.name).join(', ')}`
+          // Store selected venues in localStorage or process further
+          localStorage.setItem('selectedVenues', selectedVenues);
+          const finalticketData = {
             id: ticketId,
             name: ticketName,
             price: ticketPrice,
-            credits : ticketCredits
-        };
-
-        // Save to local storage
-        localStorage.setItem('selectedTicket', JSON.stringify(ticketData));
-
-        // Optionally, redirect to the payment method page
-        window.location.href = 'paymentMethod'; // Adjust the URL as needed
+            credits: ticketCredits,
+            venue : selectedVenues
+          }; 
+          localStorage.setItem("finalticketData",JSON.stringify(finalticketData))
+          // Close the modal
+          venueModal.hide();
+          message.textContent = ""
+          window.location.href = "paymentMethod"
+        } else {
+          message.textContent = 'Please select at least one venue.'
+        }
+      });
     });
-});
+  });
+  
+  
+  
 
 // ======================================Product Information===================================
 
  // Retrieve ticket data from local storage
- const ticketData = JSON.parse(localStorage.getItem('selectedTicket'));
- console.log(ticketData);
+ const finalticketData = JSON.parse(localStorage.getItem('finalticketData'));
+ console.log(finalticketData);
 
- // Check if ticket data exists
- if (ticketData) {
+ if (finalticketData) {
      // Update the product name
-     document.getElementById('productname').textContent = ticketData.name;
+     document.getElementById('productname').textContent = finalticketData.name;
 
      // Update the product subtotal, total payment, and Buy Now price
-     document.getElementById('subtotal').textContent = ticketData.price;
-     document.getElementById('total').textContent = ticketData.price;
-     document.getElementById('buy-now-price').textContent = ticketData.price;
+     document.getElementById('subtotal').textContent = finalticketData.price;
+     document.getElementById('total').textContent = finalticketData.price;
+     document.getElementById('buy-now-price').textContent = finalticketData.price;
+
 const buyBtn = document.getElementById("buyBtn")
 
 buyBtn.addEventListener("click",()=>{
@@ -743,7 +929,7 @@ buyBtn.addEventListener("click",()=>{
          'Content-Type': 'application/json',
          'X-CSRFTOKEN':csrftoken
         },
-     body: JSON.stringify(ticketData)
+     body: JSON.stringify(finalticketData)
     })
   })
   } else {
